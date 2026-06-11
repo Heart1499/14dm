@@ -1,9 +1,12 @@
+以下是您所需的韩娱WVS风格DM模拟器的HTML代码。它实现了爱豆视角，支持设置昵称、发送消息，并能触发粉丝“一呼百应”的互动效果。
+
+```html
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>小雨披导演 · 泡泡模拟器</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>WVS DM 模拟器 - 爱豆视角 · 一呼百应</title>
     <style>
         * {
             margin: 0;
@@ -13,223 +16,309 @@
         }
 
         body {
-            background: #0a0a0a;
-            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #000000;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-            padding: 12px;
+            min-height: 100vh;
         }
 
-        /* WVS DM 风格手机容器 */
+        /* 手机容器 */
         .phone {
-            max-width: 400px;
             width: 100%;
-            height: 750px;
-            background: #0e0e10;
-            border-radius: 38px;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5), 0 0 0 8px #1c1c1e;
-            overflow: hidden;
+            max-width: 430px;
+            height: 100vh;
+            max-height: 932px;
+            background-color: #000;
             display: flex;
             flex-direction: column;
             position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            overflow: hidden;
         }
 
-        /* 顶部状态栏 */
+        /* 状态栏 */
         .status-bar {
-            background: #0e0e10;
-            padding: 12px 20px 6px;
+            padding-top: 12px;
+            padding-bottom: 6px;
+            padding-left: 20px;
+            padding-right: 20px;
+            background-color: #000;
             display: flex;
             justify-content: space-between;
             font-size: 14px;
             font-weight: 600;
-            color: #ffffff;
+            color: white;
         }
 
-        /* 聊天列表/聊天室切换 — WVS风格的tab */
-        .chat-tabs {
+        /* 头部: 包含设置名字区域 */
+        .header {
             display: flex;
-            background: #0e0e10;
-            padding: 8px 16px;
-            gap: 8px;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            background-color: #000;
             border-bottom: 0.5px solid #2c2c2e;
-        }
-        .chat-tab {
-            flex: 1;
-            text-align: center;
-            padding: 8px 0;
-            font-size: 14px;
-            font-weight: 500;
-            color: #8e8e93;
-            border-radius: 20px;
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-        .chat-tab.active {
-            background: #2c2c2e;
-            color: #ffffff;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
-        /* 聊天室容器 — 模仿WVS DM消息列表 */
-        .chat-room {
+        .back-btn {
+            font-size: 24px;
+            color: #0a84ff;
+            cursor: pointer;
+            background: none;
+            border: none;
+            line-height: 1;
+        }
+
+        .profile-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+            background-image: linear-gradient(135deg, #5e5ce0, #b86bff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            color: white;
+        }
+
+        .info {
+            line-height: 1.3;
+        }
+
+        .info h2 {
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .edit-name-btn {
+            background: none;
+            border: none;
+            color: #0a84ff;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 12px;
+            background-color: #1c1c1e;
+        }
+
+        .info p {
+            font-size: 11px;
+            color: #8e8e93;
+        }
+
+        .menu-icon {
+            color: #0a84ff;
+            font-size: 20px;
+            font-weight: 500;
+        }
+
+        /* 聊天区域 */
+        .chat-area {
             flex: 1;
             overflow-y: auto;
             padding: 16px 12px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            background: #0e0e10;
+            gap: 14px;
+            scroll-behavior: smooth;
+            background-color: #000;
         }
 
-        /* 消息行 — WVS风格：头像+内容 */
-        .message-row {
-            display: flex;
-            gap: 10px;
-            align-items: flex-start;
-        }
-        /* 对方头像 */
-        .avatar {
-            width: 36px;
-            height: 36px;
-            background: #2c2c2e;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            flex-shrink: 0;
-        }
-        /* 消息内容区 */
-        .message-content {
-            flex: 1;
+        /* 消息通用 */
+        .message {
             display: flex;
             flex-direction: column;
-            gap: 4px;
-        }
-        .sender-name {
-            font-size: 12px;
-            font-weight: 600;
-            color: #ffffff;
-        }
-        .bubble {
-            background: #1c1c1e;
-            padding: 10px 14px;
-            border-radius: 18px;
-            border-top-left-radius: 4px;
-            color: #ffffff;
-            font-size: 14px;
-            line-height: 1.4;
-            word-break: break-word;
-            max-width: 100%;
-            display: inline-block;
-        }
-        /* 导演自己发送的消息（右对齐，无头像） */
-        .my-message {
-            display: flex;
-            justify-content: flex-end;
-            margin: 8px 0;
-        }
-        .my-bubble {
-            background: #2c6b2f;
-            padding: 10px 14px;
-            border-radius: 18px;
-            border-top-right-radius: 4px;
-            color: #ffffff;
-            font-size: 14px;
-            line-height: 1.4;
             max-width: 80%;
-            word-break: break-word;
-        }
-        .message-time {
-            font-size: 9px;
-            color: #5c5c5e;
-            margin-top: 2px;
-            margin-left: 4px;
-        }
-        /* 照片/语音特殊样式 */
-        .media-bubble {
-            background: #1c1c1e;
-            padding: 8px 12px;
-            border-radius: 18px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .media-bubble span {
-            font-size: 20px;
+            animation: fadeInUp 0.2s ease-out;
         }
 
-        /* 预设回复按钮区 */
-        .preset-btns {
-            display: flex;
-            gap: 8px;
-            padding: 10px 16px;
-            background: #0e0e10;
-            overflow-x: auto;
-            border-top: 0.5px solid #2c2c2e;
-            border-bottom: 0.5px solid #2c2c2e;
+        /* 粉丝消息 (左侧) */
+        .message.fan {
+            align-items: flex-start;
+            align-self: flex-start;
         }
-        .preset-btn {
-            background: #2c2c2e;
-            border: none;
+
+        /* 爱豆自己的消息 (右侧) */
+        .message.idol {
+            align-items: flex-end;
+            align-self: flex-end;
+        }
+
+        .bubble {
+            padding: 10px 14px;
             border-radius: 20px;
-            padding: 6px 14px;
-            color: #ffffff;
-            font-size: 12px;
-            white-space: nowrap;
-            cursor: pointer;
+            font-size: 15px;
+            line-height: 1.4;
+            word-break: break-word;
+            white-space: pre-wrap;
         }
 
-        /* 输入区 — WVS风格 */
-        .reply-area {
-            background: #0e0e10;
-            padding: 10px 16px;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            border-top: 0.5px solid #2c2c2e;
+        .fan .bubble {
+            background-color: #1c1c1e;
+            color: white;
+            border-top-left-radius: 6px;
         }
-        .reply-input {
+
+        .idol .bubble {
+            background-color: #0a84ff;
+            color: white;
+            border-top-right-radius: 6px;
+        }
+
+        .message-name {
+            font-size: 12px;
+            color: #8e8e93;
+            margin-bottom: 4px;
+            margin-left: 6px;
+            font-weight: 500;
+        }
+
+        .idol .message-name {
+            text-align: right;
+            margin-right: 6px;
+            margin-left: 0;
+            color: #0a84ff;
+        }
+
+        .time-stamp {
+            font-size: 10px;
+            color: #636366;
+            margin-top: 4px;
+            margin-left: 12px;
+            margin-right: 12px;
+        }
+
+        /* 新消息按钮 */
+        .scroll-to-bottom {
+            position: absolute;
+            bottom: 80px;
+            right: 16px;
+            background: #1c1c1e;
+            border-radius: 30px;
+            padding: 6px 14px;
+            font-size: 12px;
+            color: #0a84ff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            z-index: 10;
+            font-weight: 500;
+        }
+
+        /* 底部输入栏 (完全仿WVS，带发送功能) */
+        .input-bar {
+            background-color: #000;
+            border-top: 0.5px solid #2c2c2e;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .plus-btn {
+            font-size: 24px;
+            color: #0a84ff;
+            cursor: default;
+        }
+
+        .message-input {
             flex: 1;
-            background: #2c2c2e;
+            background-color: #1c1c1e;
             border: none;
             border-radius: 30px;
             padding: 10px 16px;
-            color: #ffffff;
-            font-size: 14px;
+            color: white;
+            font-size: 15px;
             outline: none;
         }
-        .reply-input::placeholder {
-            color: #8e8e93;
+
+        .message-input::placeholder {
+            color: #636366;
         }
+
         .send-btn {
-            background: #2c6b2f;
+            background: none;
             border: none;
-            border-radius: 30px;
-            padding: 8px 18px;
-            color: white;
+            color: #0a84ff;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 15px;
             cursor: pointer;
+            padding: 6px 10px;
+            transition: opacity 0.2s;
+        }
+
+        .send-btn:active {
+            opacity: 0.6;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chat-area::-webkit-scrollbar {
+            width: 4px;
+        }
+        .chat-area::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .chat-area::-webkit-scrollbar-thumb {
+            background-color: #3a3a3c;
+            border-radius: 4px;
         }
 
         .empty-chat {
             text-align: center;
-            color: #5c5c5e;
-            padding: 40px 20px;
+            color: #636366;
+            font-size: 14px;
+            margin-top: 40px;
+        }
+        
+        /* 一呼百应提示小toast */
+        .toast-message {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(28,28,30,0.9);
+            backdrop-filter: blur(8px);
+            padding: 8px 18px;
+            border-radius: 40px;
+            color: white;
             font-size: 13px;
+            z-index: 20;
+            white-space: nowrap;
+            pointer-events: none;
+            animation: fadeOut 2s forwards;
         }
-
-        .chat-room::-webkit-scrollbar {
-            width: 4px;
-        }
-        .chat-room::-webkit-scrollbar-track {
-            background: #1c1c1e;
-        }
-        .chat-room::-webkit-scrollbar-thumb {
-            background: #3a3a3c;
-            border-radius: 4px;
+        @keyframes fadeOut {
+            0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+            15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-10px); visibility: hidden; }
         }
     </style>
 </head>
@@ -237,434 +326,450 @@
 <div class="phone">
     <div class="status-bar">
         <span>9:41</span>
-        <span>📶 🔋</span>
+        <span>📶 🔋 100%</span>
     </div>
-    <div class="chat-tabs">
-        <div class="chat-tab active" data-room="fans">🎬 影迷聊天室</div>
-        <div class="chat-tab" data-room="sy">🐺 申惟</div>
-        <div class="chat-tab" data-room="hj">🐰 韩振</div>
+
+    <!-- 头部包含名字编辑功能 -->
+    <div class="header">
+        <button class="back-btn" aria-label="返回">←</button>
+        <div class="profile-area">
+            <div class="avatar" id="avatarEmoji">🐰</div>
+            <div class="info">
+                <h2>
+                    <span id="idolNameDisplay">나의 아이돌</span>
+                    <button class="edit-name-btn" id="editNameBtn">✎ 설정</button>
+                </h2>
+                <p>✨ 粉丝 2.3k · 活跃中 ✨</p>
+            </div>
+        </div>
+        <div class="menu-icon">•••</div>
     </div>
-    <div id="chatContainer" class="chat-room"></div>
-    <div class="preset-btns" id="presetBtns"></div>
-    <div class="reply-area">
-        <input type="text" id="replyInput" class="reply-input" placeholder="输入消息...">
-        <button id="sendBtn" class="send-btn">发送</button>
+
+    <!-- 聊天区域 -->
+    <div class="chat-area" id="chatArea">
+        <div class="empty-chat" id="emptyMsgPlaceholder">💬 粉丝们正在涌入聊天室... 发条消息试试 "一呼百应" 💬</div>
+    </div>
+
+    <div class="scroll-to-bottom" id="scrollBtn" style="display: none;">↓ 新消息</div>
+
+    <!-- 底部输入栏 可发送消息 -->
+    <div class="input-bar">
+        <div class="plus-btn">+</div>
+        <input type="text" class="message-input" id="messageInput" placeholder="向粉丝们发送消息..." autocomplete="off">
+        <button class="send-btn" id="sendMsgBtn">发送</button>
     </div>
 </div>
 
 <script>
-    // ==================== WVS风格 聊天数据 ====================
-    // 影迷群聊（持续滚动消息）
-    let fansMessages = [
-        { sender: "🍿 电影迷", text: "导演nim！新剧什么时候播？", time: "10:24", type: "text", avatar: "🎬" },
-        { sender: "🦒 长颈鹿饲养员", text: "申惟那个回眸我看了100遍...", time: "10:25", type: "text", avatar: "🦒" },
-        { sender: "🐰 兔子饲养员", text: "韩振的中文台词好苏啊", time: "10:27", type: "text", avatar: "🐰" },
-        { sender: "📽️ 胶片机", text: "导演导戏的时候在想什么？", time: "10:30", type: "text", avatar: "🎞️" },
+    // ======================= 韩娱WVS DM模拟器 - 爱豆视角 + 一呼百应功能 =======================
+    // 粉丝池数据
+    const fanNamesPool = [
+        "✨정국이♡", "🌻LISA_보라", "🐱니키니키", "🌸지수야사랑해", "💎카리나팬", "🐯호시에 빠짐", 
+        "🍓민지_최고", "🐰단이의_하나", "⭐️하니의_별", "🎸승관이밥줘", "🦊르세라핌_fi", "💜뷔_태태바보",
+        "🥨엔하이픈_정원", "🐧아이들_미연", "🌙소녀시대영원", "🐥채영이짱", "🥹윈터_겨울왕국", "🔥르세라핌_김채원",
+        "🍒해찬이_사랑", "💙제노야_최고", "🌸윈브_원영", "🐣케플러_샤오팅", "⭐️아이브_레이", "💗뉴진스_혜인"
     ];
     
-    // 申惟私聊（话少、克制）
-    let syMessages = [
-        { sender: "申惟", text: "导演，刚看完剧本", time: "09:15", type: "text", avatar: "🐺" },
-        { sender: "申惟", text: "有一段戏我不太明白", time: "09:18", type: "text", avatar: "🐺" },
-        { sender: "申惟", text: "（照片）", time: "14:20", type: "photo", photoDesc: "📖 剧本批注", avatar: "🐺" },
+    const fanMessageBank = [
+        "오빠/언니 보고싶어요!!! ❤️❤️❤️",
+        "오늘도 최고예요! 사랑해요 ♪(´▽｀)",
+        "방금 새 앨범 들었어요 대박...😭😭",
+        "우리 팬들도 항상 응원해요!!",
+        "DM 읽어주셔서 감사합니다ㅠㅠ",
+        "와 진짜 사랑해요 ㅠㅠ❤️",
+        "자니? 나는 잠이 안와ㅠㅠ",
+        "투모로우 콘서트 가요!💃",
+        "인스타 릴스 봤어요 완전 멋져요",
+        "어제 생방송 너무 재밌었어요😍",
+        "❤️‍🔥❤️‍🔥❤️‍🔥 화이팅!",
+        "같은 공기 마셔서 행복해❤️",
+        "이모지 10개 보냅니다 🎉🎉🎉",
+        "항상 빛나는 별이 되어줘서 고마워",
+        "하트뿅뿅 💖💖💖",
+        "오늘 하루도 힘내세요!",
+        "신곡 미쳤다 ... 플레이리스트에 추가",
+        "눈물나... 너무 감동이야 😭",
+        "우리 오빠/언니는 천재야!",
+        "❤️❤️❤️❤️❤️❤️❤️❤️",
+        "빨리 한국 와줘!!!",
+        "저는 대만 팬이에요 사랑해요",
+        "일본에서도 응원합니다!",
+        "dm 와주셔서 영광입니다ㅠ",
+        "우리 만나고 싶다 ㅠㅠ",
+        "목소리 너무 좋아요 🩷",
+        "팬싸 가고싶어요 ㅠㅠㅠ",
+        "저 아이돌 데뷔 준비중인데 롤모델이에요",
+        "✨♥️ 언니 최고 존예 ♥️✨",
+        "🐰🐰🐰 토끼 귀요미"
     ];
     
-    // 韩振私聊（话多、活泼）
-    let hjMessages = [
-        { sender: "韩振", text: "导演！今天拍戏状态好好", time: "08:30", type: "text", avatar: "🐰" },
-        { sender: "韩振", text: "（语音消息）", time: "13:20", type: "voice", voiceLen: "0:08", avatar: "🐰" },
-        { sender: "韩振", text: "导演晚安～～", time: "22:15", type: "text", avatar: "🐰" },
-    ];
+    const emotes = ["😭💕", "🤍", "🐰💖", "✨✨", "🔥", "💎", "🌸", "🥺👉👈", "😍🔥", "🎀", "🎤", "💥", "💫"];
     
-    // 狗血红果短剧剧情索引
-    const dramaEvents = [
-        "【红果短剧预告】申惟和韩振的新剧《致命契约》下周上线！",
-        "【红果短剧花絮】申惟拍吻戏耳朵红透，韩振笑着帮他扇风",
-        "【红果短剧路透】两人在雨中拉扯的戏份拍了八条，导演喊卡时两人都哭了",
-        "【红果短剧】韩振用中文说“你欠我的这辈子都还不清”，申惟接“那就下辈子继续还”",
-        "【红果短剧】导演透露结局是开放式的，粉丝已经在猜了",
-    ];
-    let dramaIndex = 0;
-    
-    let currentRoom = "fans";
-    let simulateTimer = null;
-    let fansTimer = null;
-    
-    // 预设回复选项（WVS风格）
-    const presetReplies = {
-        fans: [
-            "谢谢支持！",
-            "剧透一点点？不行～",
-            "花絮会多放的",
-            "他们很敬业",
-            "结局你们猜"
-        ],
-        sy: [
-            "嗯，哪一段？",
-            "发给我看看",
-            "慢慢来，不着急",
-            "今天辛苦了",
-            "相信你可以的"
-        ],
-        hj: [
-            "今天状态确实好",
-            "发语音听听",
-            "早点休息",
-            "我也觉得",
-            "继续保持"
-        ]
-    };
-    
-    // 影迷随机消息池（像真实泡泡一样）
-    const fanMessagePool = [
-        { sender: "🎬 电影迷", text: "导演！红果短剧什么时候播？", avatar: "🎬" },
-        { sender: "🦒 长颈鹿饲养员", text: "申惟那个眼神杀我", avatar: "🦒" },
-        { sender: "🐰 兔子饲养员", text: "韩振说中文好可爱", avatar: "🐰" },
-        { sender: "📽️ 胶片机", text: "导演导戏的时候好帅", avatar: "🎞️" },
-        { sender: "🍿 爆米花", text: "1499！锐因是真的", avatar: "🍿" },
-        { sender: "🎭 戏剧迷", text: "他俩的对手戏火花四溅", avatar: "🎭" },
-        { sender: "📸 站姐", text: "导演多发点剧照吧求求了", avatar: "📸" },
-        { sender: "🌟 星光", text: "申惟的眼泪戏太绝了", avatar: "🌟" },
-        { sender: "🌸 花瓣", text: "韩振是不是真的入戏了", avatar: "🌸" },
-        { sender: "🎵 OST", text: "主题曲谁唱啊导演", avatar: "🎵" },
-    ];
-    
-    function getCurrentTime() {
-        return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    function randomItem(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
     }
     
-    // 发送红果短剧相关剧情到影迷聊天室（模拟剧宣）
-    function pushDramaNews() {
-        const dramaMsg = {
-            sender: "🎬 红果短剧官方",
-            text: dramaEvents[dramaIndex % dramaEvents.length],
-            time: getCurrentTime(),
-            type: "text",
-            avatar: "🍎"
-        };
-        fansMessages.push(dramaMsg);
-        dramaIndex++;
-        if (currentRoom === "fans") {
-            renderChatRoom();
-            scrollToBottom();
+    function getRandomTime() {
+        const now = new Date();
+        const minutesAgo = Math.floor(Math.random() * 10);
+        const date = new Date(now.getTime() - minutesAgo * 60 * 1000);
+        return `${date.getHours().toString().padStart(2,'0')}:${date.getMinutes().toString().padStart(2,'0')}`;
+    }
+    
+    function generateRandomFanMessage() {
+        let base = randomItem(fanMessageBank);
+        if (Math.random() > 0.7) base += " " + randomItem(emotes);
+        if (Math.random() > 0.8) base += "!!!";
+        return base;
+    }
+    
+    function getRandomFanName() {
+        return randomItem(fanNamesPool);
+    }
+    
+    // 全局数据
+    let messages = [];          // 存储消息 { id, type, senderName, content, time }
+    let idolName = "나의 아이돌";  // 默认爱豆名字
+    let autoScrollEnabled = true;
+    let bombIntervalId = null;
+    let isBombActive = true;     // 粉丝轰炸持续开启
+    
+    // DOM 元素
+    const chatContainer = document.getElementById('chatArea');
+    const emptyPlaceholder = document.getElementById('emptyMsgPlaceholder');
+    const scrollBtn = document.getElementById('scrollBtn');
+    const messageInput = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendMsgBtn');
+    const idolNameSpan = document.getElementById('idolNameDisplay');
+    const editNameBtn = document.getElementById('editNameBtn');
+    const avatarEmoji = document.getElementById('avatarEmoji');
+    
+    // 辅助函数
+    function scrollToBottom() {
+        if (chatContainer) {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            autoScrollEnabled = true;
+            if (scrollBtn) scrollBtn.style.display = 'none';
         }
-        // 每隔几分钟推送一条新剧讯
-        setTimeout(pushDramaNews, 45000 + Math.random() * 30000);
     }
     
-    // 影迷聊天室持续滚动新消息
-    function startFanMessagesLoop() {
-        if (fansTimer) clearInterval(fansTimer);
-        fansTimer = setInterval(() => {
-            const randomMsg = fanMessagePool[Math.floor(Math.random() * fanMessagePool.length)];
-            const newMsg = {
-                sender: randomMsg.sender,
-                text: randomMsg.text,
-                time: getCurrentTime(),
-                type: "text",
-                avatar: randomMsg.avatar
-            };
-            fansMessages.push(newMsg);
-            if (currentRoom === "fans") {
-                renderChatRoom();
-                scrollToBottom();
-            }
-            // 控制消息条数过多时清理
-            if (fansMessages.length > 80) {
-                fansMessages = fansMessages.slice(-60);
-            }
-        }, 6000 + Math.random() * 5000);
-    }
-    
-    // 申惟和韩振的主动消息（无发错人情节）
-    function startActorMessages() {
-        setInterval(() => {
-            if (currentRoom !== "sy") {
-                const syMsgs = [
-                    "导演，明天几点拍摄？",
-                    "今天辛苦了",
-                    "我看了剪辑版，挺好",
-                    "（照片）",
-                    "晚安",
-                    "有点紧张明天的戏"
-                ];
-                const choice = syMsgs[Math.floor(Math.random() * syMsgs.length)];
-                if (choice.includes("照片")) {
-                    syMessages.push({
-                        sender: "申惟",
-                        text: "（照片）",
-                        time: getCurrentTime(),
-                        type: "photo",
-                        photoDesc: "📷 练习室",
-                        avatar: "🐺"
-                    });
-                } else {
-                    syMessages.push({
-                        sender: "申惟",
-                        text: choice,
-                        time: getCurrentTime(),
-                        type: "text",
-                        avatar: "🐺"
-                    });
-                }
-                if (currentRoom === "sy") {
-                    renderChatRoom();
-                    scrollToBottom();
-                }
-            }
-        }, 18000);
-        
-        setInterval(() => {
-            if (currentRoom !== "hj") {
-                const hjMsgs = [
-                    "导演！我今天学了新中文",
-                    "（语音消息）",
-                    "想你了～～",
-                    "今天拍戏好开心",
-                    "导演吃饭了吗",
-                    "晚安导演"
-                ];
-                const choice = hjMsgs[Math.floor(Math.random() * hjMsgs.length)];
-                if (choice.includes("语音")) {
-                    hjMessages.push({
-                        sender: "韩振",
-                        text: "（语音消息）",
-                        time: getCurrentTime(),
-                        type: "voice",
-                        voiceLen: "0:06",
-                        avatar: "🐰"
-                    });
-                } else {
-                    hjMessages.push({
-                        sender: "韩振",
-                        text: choice,
-                        time: getCurrentTime(),
-                        type: "text",
-                        avatar: "🐰"
-                    });
-                }
-                if (currentRoom === "hj") {
-                    renderChatRoom();
-                    scrollToBottom();
-                }
-            }
-        }, 15000);
-    }
-    
-    // 发送消息（导演回复）
-    function sendMessage(text) {
-        if (!text.trim()) return;
-        const myMsg = {
-            text: text,
-            time: getCurrentTime(),
-            isMine: true
-        };
-        
-        if (currentRoom === "fans") {
-            fansMessages.push({ ...myMsg, sender: "导演", type: "text" });
-            renderChatRoom();
-            // 影迷可能会继续回复（但不用额外逻辑，已有定时器）
-        } else if (currentRoom === "sy") {
-            syMessages.push({ ...myMsg, sender: "导演", type: "text" });
-            renderChatRoom();
-            simulateSyReply();
-        } else if (currentRoom === "hj") {
-            hjMessages.push({ ...myMsg, sender: "导演", type: "text" });
-            renderChatRoom();
-            simulateHjReply();
-        }
-        document.getElementById('replyInput').value = '';
-        scrollToBottom();
-    }
-    
-    // 模拟申惟回复（人设克制、回应简洁）
-    function simulateSyReply() {
-        if (simulateTimer) clearTimeout(simulateTimer);
-        simulateTimer = setTimeout(() => {
-            const replies = [
-                "嗯", "知道了", "好的", "...", "谢谢导演",
-                "明白了", "我会注意", "导演也是", "晚安"
-            ];
-            const replyText = replies[Math.floor(Math.random() * replies.length)];
-            syMessages.push({
-                sender: "申惟",
-                text: replyText,
-                time: getCurrentTime(),
-                type: "text",
-                avatar: "🐺"
-            });
-            if (currentRoom === "sy") {
-                renderChatRoom();
-                scrollToBottom();
-            }
-        }, 1500 + Math.random() * 1500);
-    }
-    
-    // 模拟韩振回复（活泼、话多）
-    function simulateHjReply() {
-        if (simulateTimer) clearTimeout(simulateTimer);
-        simulateTimer = setTimeout(() => {
-            const replies = [
-                "真的吗！", "嘿嘿", "导演你太好了", "我也觉得", "ㅋㅋㅋ",
-                "今天好开心", "收到！", "晚安导演～", "明天见"
-            ];
-            const replyText = replies[Math.floor(Math.random() * replies.length)];
-            hjMessages.push({
-                sender: "韩振",
-                text: replyText,
-                time: getCurrentTime(),
-                type: "text",
-                avatar: "🐰"
-            });
-            if (currentRoom === "hj") {
-                renderChatRoom();
-                scrollToBottom();
-            }
-        }, 1200 + Math.random() * 1800);
-    }
-    
-    // 渲染WVS风格聊天室
-    function renderChatRoom() {
-        const container = document.getElementById('chatContainer');
-        if (!container) return;
-        
-        let messages = [];
-        if (currentRoom === "fans") messages = fansMessages;
-        else if (currentRoom === "sy") messages = syMessages;
-        else messages = hjMessages;
+    function renderMessages() {
+        const existingMessages = chatContainer.querySelectorAll('.message:not(.placeholder-only)');
+        existingMessages.forEach(node => node.remove());
         
         if (messages.length === 0) {
-            container.innerHTML = `<div class="empty-chat">暂无消息，发一条吧~</div>`;
-            updatePresetButtons();
+            emptyPlaceholder.style.display = 'block';
             return;
         }
+        emptyPlaceholder.style.display = 'none';
         
-        let html = '';
-        for (let i = 0; i < messages.length; i++) {
-            const msg = messages[i];
-            // 判断是否为自己发送的消息（导演发送的没有头像、右对齐）
-            if (msg.sender === "导演" || msg.isMine === true) {
-                html += `
-                    <div class="my-message">
-                        <div class="my-bubble">${escapeHtml(msg.text)}</div>
-                    </div>
-                    <div class="message-time" style="text-align: right; margin-right: 8px;">${msg.time}</div>
-                `;
-            } else {
-                // 对方消息：显示头像 + 气泡
-                let contentHtml = '';
-                if (msg.type === "photo") {
-                    contentHtml = `<div class="media-bubble"><span>📷</span> ${escapeHtml(msg.photoDesc || '照片')}</div>`;
-                } else if (msg.type === "voice") {
-                    contentHtml = `<div class="media-bubble"><span>🎤</span> 语音 ${msg.voiceLen || '0:06'}</div>`;
-                } else {
-                    contentHtml = `<div class="bubble">${escapeHtml(msg.text)}</div>`;
-                }
-                html += `
-                    <div class="message-row">
-                        <div class="avatar">${msg.avatar || (msg.sender === '申惟' ? '🐺' : '🐰')}</div>
-                        <div class="message-content">
-                            <div class="sender-name">${escapeHtml(msg.sender)}</div>
-                            ${contentHtml}
-                            <div class="message-time">${msg.time}</div>
-                        </div>
-                    </div>
-                `;
-            }
+        messages.forEach(msg => {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', msg.type === 'fan' ? 'fan' : 'idol');
+            messageDiv.setAttribute('data-id', msg.id);
+            
+            const nameSpan = document.createElement('div');
+            nameSpan.classList.add('message-name');
+            nameSpan.textContent = msg.senderName;
+            
+            const bubbleDiv = document.createElement('div');
+            bubbleDiv.classList.add('bubble');
+            bubbleDiv.textContent = msg.content;
+            
+            const timeSpan = document.createElement('div');
+            timeSpan.classList.add('time-stamp');
+            timeSpan.textContent = msg.time;
+            
+            messageDiv.appendChild(nameSpan);
+            messageDiv.appendChild(bubbleDiv);
+            messageDiv.appendChild(timeSpan);
+            chatContainer.appendChild(messageDiv);
+        });
+        
+        if (autoScrollEnabled) {
+            scrollToBottom();
+        } else {
+            if (messages.length > 0 && scrollBtn) scrollBtn.style.display = 'flex';
         }
-        container.innerHTML = html;
-        updatePresetButtons();
     }
     
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
-    }
-    
-    function updatePresetButtons() {
-        const container = document.getElementById('presetBtns');
-        if (!container) return;
-        let replies = presetReplies.fans;
-        if (currentRoom === "sy") replies = presetReplies.sy;
-        else if (currentRoom === "hj") replies = presetReplies.hj;
+    function addMessage(type, senderName, content, time = null) {
+        const newMsg = {
+            id: Date.now() + Math.random() * 10000 + Math.random(),
+            type: type,   // 'fan' or 'idol'
+            senderName: senderName,
+            content: content,
+            time: time || getRandomTime()
+        };
+        messages.push(newMsg);
+        renderMessages();
         
-        container.innerHTML = '';
-        replies.forEach(reply => {
-            const btn = document.createElement('button');
-            btn.className = 'preset-btn';
-            btn.innerText = reply;
-            btn.onclick = () => {
-                document.getElementById('replyInput').value = reply;
-                sendMessage(reply);
-            };
-            container.appendChild(btn);
-        });
+        if (!autoScrollEnabled && scrollBtn) scrollBtn.style.display = 'flex';
+        
+        // 微震动
+        if (navigator.vibrate) navigator.vibrate(30);
     }
     
-    function scrollToBottom() {
-        const container = document.getElementById('chatContainer');
-        if (container) {
+    // 粉丝轰炸：持续随机添加粉丝消息 (爱豆视角接收)
+    function startFanBombardment() {
+        if (bombIntervalId) clearInterval(bombIntervalId);
+        // 动态调整频率：主要使用setInterval + 随机间隔，但通过递归setTimeout更灵活
+        function fanLoop() {
+            if (!isBombActive) return;
+            const delay = Math.random() * 1300 + 400;  // 0.4~1.7秒一条，轰炸感
             setTimeout(() => {
-                container.scrollTop = container.scrollHeight;
-            }, 50);
+                if (!isBombActive) return;
+                const randomFan = getRandomFanName();
+                const randomMsg = generateRandomFanMessage();
+                addMessage('fan', randomFan, randomMsg);
+                // 偶尔连续多发 (多重轰炸)
+                if (Math.random() > 0.75 && messages.length < 300) {
+                    setTimeout(() => {
+                        if (isBombActive) {
+                            const extraFan = getRandomFanName();
+                            const extraMsg = generateRandomFanMessage();
+                            addMessage('fan', extraFan, extraMsg);
+                        }
+                    }, 120);
+                }
+                if (Math.random() > 0.9 && messages.length < 300) {
+                    setTimeout(() => {
+                        if (isBombActive) {
+                            const tripleFan = getRandomFanName();
+                            const tripleMsg = generateRandomFanMessage() + " 💥💥";
+                            addMessage('fan', tripleFan, tripleMsg);
+                        }
+                    }, 220);
+                }
+                fanLoop();
+            }, delay);
+        }
+        fanLoop();
+        
+        // 额外每过6秒增加一条稍微特殊一点的消息 活跃气氛
+        setInterval(() => {
+            if (isBombActive && messages.length < 400) {
+                const specialFan = getRandomFanName();
+                const specialMsg = randomItem(["🎤 라이브 기대해요!!", "📸 셀카 보고싶어요 ❤️", "🌙 항상 응원합니다", "✨✨✨✨", "💌 DM 와줘서 고마워요"]);
+                addMessage('fan', specialFan, specialMsg);
+            }
+        }, 5800);
+    }
+    
+    // 一呼百应核心: 爱豆发送一条消息，触发大量粉丝响应（5~15条瞬间或短时间涌入）
+    function oneCallManyResponse(idolMessageContent) {
+        const responseCount = Math.floor(Math.random() * 12) + 8;  // 8~20条回应，轰炸感
+        // 显示通知toast
+        showToast(`✨ 一呼百应！ ${responseCount}位粉丝热情回应 ✨`);
+        
+        // 粉丝回应消息池：结合原消息内容产生关联回应
+        const replyTemplates = [
+            `😭❤️ "${idolMessageContent}" 에 진심이야!!`,
+            `💖 언니/오빠 말 너무 공감해요!`,
+            `✨ 와... 진짜 멋져요 사랑해요!`,
+            `💎 나도 그래!!! 완전 짱👏`,
+            `🌸 맞아요 ㅠㅠ 감동이에요`,
+            `🔥🔥🔥 화이팅!!!`,
+            `🐰♥️ 최고다 최고!`,
+            `💬 나도 그렇게 생각해요!!!`,
+            `📣 언니 말 대박!`,
+            `💫 응원할게요 ~~`,
+            `✨❤️ 항상 행복하세요 ❤️✨`,
+            `🤍🤍🤍 진짜 멋진 말이야`,
+            `🎀 덕분에 힘내요!`,
+            `💪 같이 힘내자!!`,
+            `🌹 사랑해요 ♡♡`,
+            `💌 나도 너의 팬이야~~~`
+        ];
+        
+        // 根据爱豆消息内容动态增加一些自定义回复
+        let customReplies = [];
+        if (idolMessageContent.includes("사랑") || idolMessageContent.includes("❤️") || idolMessageContent.includes("love")) {
+            customReplies = ["❤️🧡💛 우리도 사랑해요!!!", "💕 사랑은 영원하다", "😭❤️ 너무 달달해"];
+        }
+        if (idolMessageContent.includes("고마워") || idolMessageContent.includes("감사")) {
+            customReplies = ["😭 항상 고마워요! 우리가 더 감사해", "❤️ 언니가 있어서 행복해요", "🙏 감사합니다 아이돌님"];
+        }
+        if (idolMessageContent.includes("힘내") || idolMessageContent.includes("화이팅")) {
+            customReplies = ["💪💪 우리 같이 힘내요!!", "🔥🔥 오늘도 힘내세요!", "🙌 응원합니다!!"];
+        }
+        
+        const allReplies = [...replyTemplates, ...customReplies];
+        
+        // 分批发送响应 (瞬间涌入效果)
+        let delay = 0;
+        for (let i = 0; i < responseCount; i++) {
+            setTimeout(() => {
+                if (!isBombActive) return; // 保持轰炸状态激活
+                let replyMsg;
+                if (Math.random() > 0.3) {
+                    replyMsg = randomItem(allReplies);
+                } else {
+                    // 有些粉丝会发原本的狂热消息
+                    replyMsg = generateRandomFanMessage();
+                }
+                const randomFan = getRandomFanName();
+                addMessage('fan', randomFan, replyMsg);
+            }, delay);
+            delay += Math.random() * 180 + 60;  // 60~240ms递增，快速涌入
+        }
+        // 额外再最后引发一次小高潮 再过0.6秒后追加 3条额外狂热
+        setTimeout(() => {
+            for (let i=0; i<3; i++) {
+                setTimeout(() => {
+                    if (isBombActive) {
+                        const fanExtra = getRandomFanName();
+                        const exciteMsg = randomItem(["🔥🔥🔥 대박", "💥💥💥 아이돌 최고", "🎉🎉🎉 축하해요", "💖💖💖 사랑해", "🐰🐰❤️❤️"]);
+                        addMessage('fan', fanExtra, exciteMsg);
+                    }
+                }, i * 150);
+            }
+        }, 400);
+    }
+    
+    // 发送爱豆消息 (自己)
+    function sendIdolMessage(content) {
+        if (!content.trim()) return;
+        const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        addMessage('idol', idolName, content.trim(), currentTime);
+        // 清空输入框
+        messageInput.value = '';
+        // 一呼百应：粉丝们集体响应轰炸！！！
+        oneCallManyResponse(content.trim());
+        // 附加额外: 爱豆发送消息后由于人气，短期增加后台轰炸密度, 但原轰炸持续已有, 无需额外，但为了效果，可额外触发一轮快速高响应
+        // 再手动快速调一点模拟
+        setTimeout(() => {
+            if (isBombActive) {
+                for(let i=0;i<3;i++) {
+                    setTimeout(() => {
+                        const rushFan = getRandomFanName();
+                        const rushMsg = randomItem(["🔥🔥 바로 일어났어요!", "✨响应召唤✨", "❤️❤️❤️❤️", "대박 사건❤️"]);
+                        addMessage('fan', rushFan, rushMsg);
+                    }, i*80);
+                }
+            }
+        }, 200);
+    }
+    
+    // 显示toast
+    function showToast(text) {
+        const existingToast = document.querySelector('.toast-message');
+        if(existingToast) existingToast.remove();
+        const toast = document.createElement('div');
+        toast.className = 'toast-message';
+        toast.innerText = text;
+        document.querySelector('.phone').appendChild(toast);
+        setTimeout(() => toast.remove(), 2000);
+    }
+    
+    // 设置爱豆名字
+    function setIdolName(newName) {
+        if (newName && newName.trim() !== "") {
+            idolName = newName.trim();
+            idolNameSpan.innerText = idolName;
+            // 可选改avatar
+            if(idolName.includes("🐰") || idolName.includes("토끼")) avatarEmoji.innerText = "🐰";
+            else if(idolName.includes("🐱") || idolName.includes("고양이")) avatarEmoji.innerText = "🐱";
+            else if(idolName.includes("🌟")) avatarEmoji.innerText = "🌟";
+            else avatarEmoji.innerText = "⭐️";
+            showToast(`✨ 이름이 "${idolName}"(으)로 변경되었습니다 ✨`);
+        } else {
+            showToast("이름을 입력해주세요!");
         }
     }
     
-    function switchRoom(room) {
-        currentRoom = room;
-        document.querySelectorAll('.chat-tab').forEach(tab => {
-            if (tab.dataset.room === room) tab.classList.add('active');
-            else tab.classList.remove('active');
-        });
-        renderChatRoom();
-        scrollToBottom();
+    // 编辑名字弹窗 (仿iOS风格)
+    function promptEditName() {
+        let newName = prompt("✨ 아티스트 이름을 설정하세요 ✨\n(예: 지민, 카리나, 해찬...)", idolName);
+        if (newName !== null && newName.trim() !== "") {
+            setIdolName(newName);
+        } else if (newName !== null && newName.trim() === "") {
+            showToast("이름을 입력해주세요!");
+        }
     }
     
-    // 清理之前的定时器
-    function clearAllTimers() {
-        if (fansTimer) clearInterval(fansTimer);
-        if (simulateTimer) clearTimeout(simulateTimer);
+    // 滚动监听
+    function bindScrollEvents() {
+        if (!chatContainer) return;
+        chatContainer.addEventListener('scroll', () => {
+            const isAtBottom = chatContainer.scrollHeight - chatContainer.scrollTop <= chatContainer.clientHeight + 60;
+            if (isAtBottom) {
+                autoScrollEnabled = true;
+                if (scrollBtn) scrollBtn.style.display = 'none';
+            } else {
+                if (autoScrollEnabled === true) autoScrollEnabled = false;
+                if (scrollBtn && messages.length > 0) scrollBtn.style.display = 'flex';
+            }
+        });
+    }
+    
+    // 清理旧消息限制（性能优化）
+    function maintainMessageLimit() {
+        setInterval(() => {
+            if (messages.length > 280) {
+                messages = messages.slice(-240);
+                renderMessages();
+                if (!autoScrollEnabled) {
+                    // 保留滚动位置体验
+                }
+            }
+        }, 12000);
+    }
+    
+    // 初次引导消息（让界面热闹）
+    function initialFloodMessages() {
+        setTimeout(() => {
+            for (let i = 0; i < 6; i++) {
+                setTimeout(() => {
+                    if (isBombActive) {
+                        const initFan = getRandomFanName();
+                        const initMsg = randomItem(["💖 안녕하세요! 아이돌님!", "🌸 데뷔 축하해요!!", "✨ 팬이에요 사랑해요", "🔥 대박나세요!!", "❤️ DM 열렸다!!", "🐰 첫 응원 왔어요"]);
+                        addMessage('fan', initFan, initMsg);
+                    }
+                }, i * 240);
+            }
+        }, 300);
     }
     
     // 初始化
     function init() {
-        clearAllTimers();
-        startFanMessagesLoop();
-        startActorMessages();
-        // 红果短剧剧情消息
-        setTimeout(pushDramaNews, 5000);
+        bindScrollEvents();
+        startFanBombardment();
+        maintainMessageLimit();
+        initialFloodMessages();
         
-        renderChatRoom();
-        
-        document.querySelectorAll('.chat-tab').forEach(tab => {
-            tab.addEventListener('click', () => switchRoom(tab.dataset.room));
+        // 发送事件绑定
+        sendBtn.addEventListener('click', () => {
+            const text = messageInput.value;
+            if (text.trim()) {
+                sendIdolMessage(text);
+            } else {
+                showToast("메시지를 입력하세요!");
+            }
+        });
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const text = messageInput.value;
+                if (text.trim()) sendIdolMessage(text);
+            }
+        });
+        editNameBtn.addEventListener('click', promptEditName);
+        scrollBtn.addEventListener('click', () => {
+            scrollToBottom();
+            autoScrollEnabled = true;
+            scrollBtn.style.display = 'none';
         });
         
-        const sendBtn = document.getElementById('sendBtn');
-        const replyInput = document.getElementById('replyInput');
-        if (sendBtn) {
-            sendBtn.addEventListener('click', () => {
-                const text = replyInput.value.trim();
-                if (text) sendMessage(text);
-            });
-        }
-        if (replyInput) {
-            replyInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    const text = replyInput.value.trim();
-                    if (text) sendMessage(text);
-                }
-            });
-        }
+        // 返回按钮只是美化装饰
+        const backBtn = document.querySelector('.back-btn');
+        if(backBtn) backBtn.addEventListener('click', () => showToast("💌 WVS DM 一呼百应 모드 💌"));
+        
+        // 默认初始IDOL名字
+        setIdolName("🐰 윈터 🎀");
     }
     
     init();
 </script>
 </body>
 </html>
-     
