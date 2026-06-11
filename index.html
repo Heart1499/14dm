@@ -1,3 +1,13 @@
+明白了，您想要的是：
+
+1. 不要发错人情节（删掉“喜欢”消息）
+2. 狗血红果短剧风格（剧情要抓马、有反转）
+3. 影迷聊天室消息持续滚动，像真的泡泡一样
+4. 界面复刻WVS/DM风格
+
+我重新做了这个版本。聊天界面完全模仿WVS（Weverse）的DM设计：深色背景、圆形头像、气泡样式、底部有预设回复按钮和输入框。影迷聊天室会每隔几秒自动弹出新消息，营造真实感。
+
+```html
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -22,45 +32,37 @@
             padding: 12px;
         }
 
-        /* 手机容器 */
+        /* WVS DM 风格手机容器 */
         .phone {
             max-width: 400px;
             width: 100%;
-            height: 700px;
-            background: #0c0c0c;
+            height: 750px;
+            background: #0e0e10;
             border-radius: 38px;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5), 0 0 0 8px #1a1a1a;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5), 0 0 0 8px #1c1c1e;
             overflow: hidden;
             display: flex;
             flex-direction: column;
             position: relative;
         }
 
-        /* 动态岛 */
-        .dynamic-island {
-            background: #111;
-            width: 110px;
-            height: 35px;
-            margin: 12px auto 0;
-            border-radius: 28px;
+        /* 顶部状态栏 */
+        .status-bar {
+            background: #0e0e10;
+            padding: 12px 20px 6px;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-        .dynamic-island span {
-            width: 10px;
-            height: 10px;
-            background: #2c2c2e;
-            border-radius: 50%;
+            justify-content: space-between;
+            font-size: 14px;
+            font-weight: 600;
+            color: #ffffff;
         }
 
-        /* 聊天列表/聊天室切换 */
+        /* 聊天列表/聊天室切换 — WVS风格的tab */
         .chat-tabs {
             display: flex;
-            background: #1c1c1e;
+            background: #0e0e10;
             padding: 8px 16px;
-            gap: 12px;
+            gap: 8px;
             border-bottom: 0.5px solid #2c2c2e;
         }
         .chat-tab {
@@ -79,98 +81,124 @@
             color: #ffffff;
         }
 
-        /* 聊天室容器 */
+        /* 聊天室容器 — 模仿WVS DM消息列表 */
         .chat-room {
             flex: 1;
             overflow-y: auto;
-            padding: 16px;
+            padding: 16px 12px;
             display: flex;
             flex-direction: column;
             gap: 12px;
-            background: #0c0c0c;
+            background: #0e0e10;
         }
 
-        /* 消息气泡 - 接收（他人发来的） */
-        .message-received {
+        /* 消息行 — WVS风格：头像+内容 */
+        .message-row {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        /* 对方头像 */
+        .avatar {
+            width: 36px;
+            height: 36px;
+            background: #2c2c2e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        /* 消息内容区 */
+        .message-content {
+            flex: 1;
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
-            max-width: 85%;
+            gap: 4px;
         }
         .sender-name {
-            font-size: 11px;
-            color: #8e8e93;
-            margin-bottom: 4px;
-            margin-left: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #ffffff;
         }
-        .bubble-received {
+        .bubble {
             background: #1c1c1e;
             padding: 10px 14px;
-            border-radius: 20px;
+            border-radius: 18px;
             border-top-left-radius: 4px;
             color: #ffffff;
             font-size: 14px;
             line-height: 1.4;
             word-break: break-word;
+            max-width: 100%;
+            display: inline-block;
         }
-        .message-time {
-            font-size: 9px;
-            color: #5c5c5e;
-            margin-top: 4px;
-            margin-left: 8px;
-        }
-
-        /* 消息气泡 - 发送（导演自己） */
-        .message-sent {
+        /* 导演自己发送的消息（右对齐，无头像） */
+        .my-message {
             display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            max-width: 85%;
-            align-self: flex-end;
+            justify-content: flex-end;
+            margin: 8px 0;
         }
-        .bubble-sent {
+        .my-bubble {
             background: #2c6b2f;
             padding: 10px 14px;
-            border-radius: 20px;
+            border-radius: 18px;
             border-top-right-radius: 4px;
             color: #ffffff;
             font-size: 14px;
             line-height: 1.4;
+            max-width: 80%;
             word-break: break-word;
         }
-
-        /* 特殊消息样式 */
-        .photo-msg {
+        .message-time {
+            font-size: 9px;
+            color: #5c5c5e;
+            margin-top: 2px;
+            margin-left: 4px;
+        }
+        /* 照片/语音特殊样式 */
+        .media-bubble {
             background: #1c1c1e;
             padding: 8px 12px;
-            border-radius: 16px;
+            border-radius: 18px;
             display: inline-flex;
             align-items: center;
             gap: 8px;
         }
-        .photo-msg span {
+        .media-bubble span {
             font-size: 20px;
         }
-        .voice-msg {
-            background: #1c1c1e;
-            padding: 8px 12px;
-            border-radius: 16px;
-            display: inline-flex;
-            align-items: center;
+
+        /* 预设回复按钮区 */
+        .preset-btns {
+            display: flex;
             gap: 8px;
+            padding: 10px 16px;
+            background: #0e0e10;
+            overflow-x: auto;
+            border-top: 0.5px solid #2c2c2e;
+            border-bottom: 0.5px solid #2c2c2e;
         }
-        .voice-msg span {
-            font-size: 16px;
+        .preset-btn {
+            background: #2c2c2e;
+            border: none;
+            border-radius: 20px;
+            padding: 6px 14px;
+            color: #ffffff;
+            font-size: 12px;
+            white-space: nowrap;
+            cursor: pointer;
         }
 
-        /* 回复输入区 */
+        /* 输入区 — WVS风格 */
         .reply-area {
-            background: #1c1c1e;
+            background: #0e0e10;
             padding: 10px 16px;
-            border-top: 0.5px solid #2c2c2e;
             display: flex;
             gap: 10px;
             align-items: center;
+            border-top: 0.5px solid #2c2c2e;
         }
         .reply-input {
             flex: 1;
@@ -195,26 +223,7 @@
             font-size: 14px;
             cursor: pointer;
         }
-        .preset-btns {
-            display: flex;
-            gap: 8px;
-            padding: 8px 16px;
-            background: #1c1c1e;
-            overflow-x: auto;
-            border-top: 0.5px solid #2c2c2e;
-        }
-        .preset-btn {
-            background: #2c2c2e;
-            border: none;
-            border-radius: 20px;
-            padding: 6px 14px;
-            color: #ffffff;
-            font-size: 12px;
-            white-space: nowrap;
-            cursor: pointer;
-        }
 
-        /* 空状态 */
         .empty-chat {
             text-align: center;
             color: #5c5c5e;
@@ -222,7 +231,6 @@
             font-size: 13px;
         }
 
-        /* 滚动条 */
         .chat-room::-webkit-scrollbar {
             width: 4px;
         }
@@ -237,20 +245,17 @@
 </head>
 <body>
 <div class="phone">
-    <div class="dynamic-island">
-        <span></span><span></span><span></span>
+    <div class="status-bar">
+        <span>9:41</span>
+        <span>📶 🔋</span>
     </div>
     <div class="chat-tabs">
         <div class="chat-tab active" data-room="fans">🎬 影迷聊天室</div>
         <div class="chat-tab" data-room="sy">🐺 申惟</div>
         <div class="chat-tab" data-room="hj">🐰 韩振</div>
     </div>
-    <div id="chatContainer" class="chat-room">
-        <!-- 动态渲染聊天内容 -->
-    </div>
-    <div class="preset-btns" id="presetBtns">
-        <!-- 预设回复按钮 -->
-    </div>
+    <div id="chatContainer" class="chat-room"></div>
+    <div class="preset-btns" id="presetBtns"></div>
     <div class="reply-area">
         <input type="text" id="replyInput" class="reply-input" placeholder="输入消息...">
         <button id="sendBtn" class="send-btn">发送</button>
@@ -258,233 +263,325 @@
 </div>
 
 <script>
-    // ==================== 聊天数据（模拟泡泡风格）====================
-    // 影迷群聊
+    // ==================== WVS风格 聊天数据 ====================
+    // 影迷群聊（持续滚动消息）
     let fansMessages = [
-        { sender: "粉丝A", text: "导演nim！电影拍得太好了！锐因是真的吗？", time: "10:24", type: "text" },
-        { sender: "粉丝B", text: "啊啊啊1499！", time: "10:25", type: "text" },
-        { sender: "粉丝C", text: "申惟耳朵红的那场戏是真情流露吧？", time: "10:27", type: "text" },
-        { sender: "粉丝D", text: "导演导演，能不能多放点花絮！", time: "10:30", type: "text" },
+        { sender: "🍿 电影迷", text: "导演nim！新剧什么时候播？", time: "10:24", type: "text", avatar: "🎬" },
+        { sender: "🦒 长颈鹿饲养员", text: "申惟那个回眸我看了100遍...", time: "10:25", type: "text", avatar: "🦒" },
+        { sender: "🐰 兔子饲养员", text: "韩振的中文台词好苏啊", time: "10:27", type: "text", avatar: "🐰" },
+        { sender: "📽️ 胶片机", text: "导演导戏的时候在想什么？", time: "10:30", type: "text", avatar: "🎞️" },
     ];
     
-    // 申惟私聊
+    // 申惟私聊（话少、克制）
     let syMessages = [
-        { sender: "申惟", text: "导演，在忙吗", time: "09:15", type: "text" },
-        { sender: "申惟", text: "嗯...没什么事", time: "09:18", type: "text" },
-        { sender: "申惟", text: "今天的拍摄辛苦了", time: "12:30", type: "text" },
-        { sender: "申惟", text: "（照片）", time: "14:20", type: "photo", photoDesc: "🌅 今天的天空" },
+        { sender: "申惟", text: "导演，刚看完剧本", time: "09:15", type: "text", avatar: "🐺" },
+        { sender: "申惟", text: "有一段戏我不太明白", time: "09:18", type: "text", avatar: "🐺" },
+        { sender: "申惟", text: "（照片）", time: "14:20", type: "photo", photoDesc: "📖 剧本批注", avatar: "🐺" },
     ];
     
-    // 韩振私聊
+    // 韩振私聊（话多、活泼）
     let hjMessages = [
-        { sender: "韩振", text: "导演！我今天学了新的中文", time: "08:30", type: "text" },
-        { sender: "韩振", text: "你吃饭了吗～", time: "11:45", type: "text" },
-        { sender: "韩振", text: "（语音消息）", time: "13:20", type: "voice", voiceLen: "0:08" },
-        { sender: "韩振", text: "哥我想你了", time: "15:10", type: "text" },
+        { sender: "韩振", text: "导演！今天拍戏状态好好", time: "08:30", type: "text", avatar: "🐰" },
+        { sender: "韩振", text: "（语音消息）", time: "13:20", type: "voice", voiceLen: "0:08", avatar: "🐰" },
+        { sender: "韩振", text: "导演晚安～～", time: "22:15", type: "text", avatar: "🐰" },
     ];
     
-    // 当前选中的聊天室
+    // 狗血红果短剧剧情索引
+    const dramaEvents = [
+        "【红果短剧预告】申惟和韩振的新剧《致命契约》下周上线！",
+        "【红果短剧花絮】申惟拍吻戏耳朵红透，韩振笑着帮他扇风",
+        "【红果短剧路透】两人在雨中拉扯的戏份拍了八条，导演喊卡时两人都哭了",
+        "【红果短剧】韩振用中文说“你欠我的这辈子都还不清”，申惟接“那就下辈子继续还”",
+        "【红果短剧】导演透露结局是开放式的，粉丝已经在猜了",
+    ];
+    let dramaIndex = 0;
+    
     let currentRoom = "fans";
+    let simulateTimer = null;
+    let fansTimer = null;
     
-    // 记录每个房间的消息数量（用于新消息提示，这里简单实现）
-    
-    // 预设回复选项（根据房间不同）
+    // 预设回复选项（WVS风格）
     const presetReplies = {
         fans: [
-            "谢谢大家的喜欢！",
-            "锐因？你们猜~",
-            "花絮会考虑的",
-            "1499是什么意思？",
-            "会继续努力拍好作品的"
+            "谢谢支持！",
+            "剧透一点点？不行～",
+            "花絮会多放的",
+            "他们很敬业",
+            "结局你们猜"
         ],
         sy: [
-            "嗯，刚忙完",
-            "今天表现很好",
-            "发张自拍看看？",
-            "辛苦了，早点休息",
-            "想说什么就说吧"
+            "嗯，哪一段？",
+            "发给我看看",
+            "慢慢来，不着急",
+            "今天辛苦了",
+            "相信你可以的"
         ],
         hj: [
-            "学了什么中文？",
-            "吃过了，你呢",
+            "今天状态确实好",
             "发语音听听",
-            "我也想你",
-            "在干嘛呢"
+            "早点休息",
+            "我也觉得",
+            "继续保持"
         ]
     };
     
-    // 模拟收到新消息（定时器）
-    let newMessageTimers = [];
+    // 影迷随机消息池（像真实泡泡一样）
+    const fanMessagePool = [
+        { sender: "🎬 电影迷", text: "导演！红果短剧什么时候播？", avatar: "🎬" },
+        { sender: "🦒 长颈鹿饲养员", text: "申惟那个眼神杀我", avatar: "🦒" },
+        { sender: "🐰 兔子饲养员", text: "韩振说中文好可爱", avatar: "🐰" },
+        { sender: "📽️ 胶片机", text: "导演导戏的时候好帅", avatar: "🎞️" },
+        { sender: "🍿 爆米花", text: "1499！锐因是真的", avatar: "🍿" },
+        { sender: "🎭 戏剧迷", text: "他俩的对手戏火花四溅", avatar: "🎭" },
+        { sender: "📸 站姐", text: "导演多发点剧照吧求求了", avatar: "📸" },
+        { sender: "🌟 星光", text: "申惟的眼泪戏太绝了", avatar: "🌟" },
+        { sender: "🌸 花瓣", text: "韩振是不是真的入戏了", avatar: "🌸" },
+        { sender: "🎵 OST", text: "主题曲谁唱啊导演", avatar: "🎵" },
+    ];
     
-    // 发送消息（导演回复）
-    function sendMessage(text) {
-        if (!text.trim()) return;
-        
-        // 添加导演自己的消息
-        const newMsg = {
-            sender: "导演",
-            text: text,
-            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    function getCurrentTime() {
+        return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+    
+    // 发送红果短剧相关剧情到影迷聊天室（模拟剧宣）
+    function pushDramaNews() {
+        const dramaMsg = {
+            sender: "🎬 红果短剧官方",
+            text: dramaEvents[dramaIndex % dramaEvents.length],
+            time: getCurrentTime(),
             type: "text",
-            isMine: true
+            avatar: "🍎"
         };
-        
+        fansMessages.push(dramaMsg);
+        dramaIndex++;
         if (currentRoom === "fans") {
-            fansMessages.push(newMsg);
             renderChatRoom();
-        } else if (currentRoom === "sy") {
-            syMessages.push(newMsg);
-            renderChatRoom();
-            // 模拟申惟回复（延迟）
-            simulateReply("sy");
-        } else if (currentRoom === "hj") {
-            hjMessages.push(newMsg);
-            renderChatRoom();
-            simulateReply("hj");
+            scrollToBottom();
         }
-        
-        document.getElementById('replyInput').value = '';
-        scrollToBottom();
+        // 每隔几分钟推送一条新剧讯
+        setTimeout(pushDramaNews, 45000 + Math.random() * 30000);
     }
     
-    // 模拟对方自动回复
-    function simulateReply(room) {
-        // 清除之前的定时器避免重复
-        if (window.simulateTimer) clearTimeout(window.simulateTimer);
-        window.simulateTimer = setTimeout(() => {
-            let replyText = "";
-            if (room === "sy") {
-                const replies = [
-                    "嗯", "知道了", "导演也是", , "我会注意的", "...好",
-                    "今天状态不太好", "谢谢导演", "你也是", "晚安",
-                    "（已读）"
-                ];
-                replyText = replies[Math.floor(Math.random() * replies.length)];
-                syMessages.push({
-                    sender: "申惟",
-                    text: replyText,
-                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                    type: "text"
-                });
-            } else if (room === "hj") {
-                const replies = [
-                    "真的吗！", "嘿嘿", "导演你太好了", "我也觉得", "ㅋㅋㅋ",
-                    "今天拍戏好累", "想你了", "下次请你吃饭", "晚安导演~",
-                    "（发了一张照片）"
-                ];
-                replyText = replies[Math.floor(Math.random() * replies.length)];
-                if (replyText.includes("照片")) {
-                    hjMessages.push({
-                        sender: "韩振",
-                        text: "（照片）",
-                        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                        type: "photo",
-                        photoDesc: "📸 刚拍的"
-                    });
-                } else {
-                    hjMessages.push({
-                        sender: "韩振",
-                        text: replyText,
-                        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                        type: "text"
-                    });
-                }
-            }
-            if (currentRoom === room) {
-                renderChatRoom();
-                scrollToBottom();
-            }
-        }, 1500 + Math.random() * 2000);
-    }
-    
-    // 模拟影迷群聊随机新消息
-    function simulateFanMessage() {
-        if (window.fanTimer) clearTimeout(window.fanTimer);
-        window.fanTimer = setTimeout(() => {
-            const fanNames = ["小雨披", "雕蛙团子", "锐因研究员", "1499号", "申惟的耳朵", "韩振的围巾"];
-            const messages = [
-                "导演真的不考虑开直播吗",
-                "啊啊啊我刚又刷了一遍电影",
-                "锐因什么时候二搭",
-                "导演你觉得申惟私下是什么样的",
-                "韩振中文说得好好听",
-                "1499锐因是真的！",
-                "导演导戏的时候会觉得他们很配吗",
-                "能不能出导演评论音轨",
-                "我朋友看了电影也入坑了"
-            ];
+    // 影迷聊天室持续滚动新消息
+    function startFanMessagesLoop() {
+        if (fansTimer) clearInterval(fansTimer);
+        fansTimer = setInterval(() => {
+            const randomMsg = fanMessagePool[Math.floor(Math.random() * fanMessagePool.length)];
             const newMsg = {
-                sender: fanNames[Math.floor(Math.random() * fanNames.length)],
-                text: messages[Math.floor(Math.random() * messages.length)],
-                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                type: "text"
+                sender: randomMsg.sender,
+                text: randomMsg.text,
+                time: getCurrentTime(),
+                type: "text",
+                avatar: randomMsg.avatar
             };
             fansMessages.push(newMsg);
             if (currentRoom === "fans") {
                 renderChatRoom();
                 scrollToBottom();
             }
-            simulateFanMessage(); // 继续循环
-        }, 8000 + Math.random() * 7000);
+            // 控制消息条数过多时清理
+            if (fansMessages.length > 80) {
+                fansMessages = fansMessages.slice(-60);
+            }
+        }, 6000 + Math.random() * 5000);
     }
     
-    // 渲染当前聊天室
+    // 申惟和韩振的主动消息（无发错人情节）
+    function startActorMessages() {
+        setInterval(() => {
+            if (currentRoom !== "sy") {
+                const syMsgs = [
+                    "导演，明天几点拍摄？",
+                    "今天辛苦了",
+                    "我看了剪辑版，挺好",
+                    "（照片）",
+                    "晚安",
+                    "有点紧张明天的戏"
+                ];
+                const choice = syMsgs[Math.floor(Math.random() * syMsgs.length)];
+                if (choice.includes("照片")) {
+                    syMessages.push({
+                        sender: "申惟",
+                        text: "（照片）",
+                        time: getCurrentTime(),
+                        type: "photo",
+                        photoDesc: "📷 练习室",
+                        avatar: "🐺"
+                    });
+                } else {
+                    syMessages.push({
+                        sender: "申惟",
+                        text: choice,
+                        time: getCurrentTime(),
+                        type: "text",
+                        avatar: "🐺"
+                    });
+                }
+                if (currentRoom === "sy") {
+                    renderChatRoom();
+                    scrollToBottom();
+                }
+            }
+        }, 18000);
+        
+        setInterval(() => {
+            if (currentRoom !== "hj") {
+                const hjMsgs = [
+                    "导演！我今天学了新中文",
+                    "（语音消息）",
+                    "想你了～～",
+                    "今天拍戏好开心",
+                    "导演吃饭了吗",
+                    "晚安导演"
+                ];
+                const choice = hjMsgs[Math.floor(Math.random() * hjMsgs.length)];
+                if (choice.includes("语音")) {
+                    hjMessages.push({
+                        sender: "韩振",
+                        text: "（语音消息）",
+                        time: getCurrentTime(),
+                        type: "voice",
+                        voiceLen: "0:06",
+                        avatar: "🐰"
+                    });
+                } else {
+                    hjMessages.push({
+                        sender: "韩振",
+                        text: choice,
+                        time: getCurrentTime(),
+                        type: "text",
+                        avatar: "🐰"
+                    });
+                }
+                if (currentRoom === "hj") {
+                    renderChatRoom();
+                    scrollToBottom();
+                }
+            }
+        }, 15000);
+    }
+    
+    // 发送消息（导演回复）
+    function sendMessage(text) {
+        if (!text.trim()) return;
+        const myMsg = {
+            text: text,
+            time: getCurrentTime(),
+            isMine: true
+        };
+        
+        if (currentRoom === "fans") {
+            fansMessages.push({ ...myMsg, sender: "导演", type: "text" });
+            renderChatRoom();
+            // 影迷可能会继续回复（但不用额外逻辑，已有定时器）
+        } else if (currentRoom === "sy") {
+            syMessages.push({ ...myMsg, sender: "导演", type: "text" });
+            renderChatRoom();
+            simulateSyReply();
+        } else if (currentRoom === "hj") {
+            hjMessages.push({ ...myMsg, sender: "导演", type: "text" });
+            renderChatRoom();
+            simulateHjReply();
+        }
+        document.getElementById('replyInput').value = '';
+        scrollToBottom();
+    }
+    
+    // 模拟申惟回复（人设克制、回应简洁）
+    function simulateSyReply() {
+        if (simulateTimer) clearTimeout(simulateTimer);
+        simulateTimer = setTimeout(() => {
+            const replies = [
+                "嗯", "知道了", "好的", "...", "谢谢导演",
+                "明白了", "我会注意", "导演也是", "晚安"
+            ];
+            const replyText = replies[Math.floor(Math.random() * replies.length)];
+            syMessages.push({
+                sender: "申惟",
+                text: replyText,
+                time: getCurrentTime(),
+                type: "text",
+                avatar: "🐺"
+            });
+            if (currentRoom === "sy") {
+                renderChatRoom();
+                scrollToBottom();
+            }
+        }, 1500 + Math.random() * 1500);
+    }
+    
+    // 模拟韩振回复（活泼、话多）
+    function simulateHjReply() {
+        if (simulateTimer) clearTimeout(simulateTimer);
+        simulateTimer = setTimeout(() => {
+            const replies = [
+                "真的吗！", "嘿嘿", "导演你太好了", "我也觉得", "ㅋㅋㅋ",
+                "今天好开心", "收到！", "晚安导演～", "明天见"
+            ];
+            const replyText = replies[Math.floor(Math.random() * replies.length)];
+            hjMessages.push({
+                sender: "韩振",
+                text: replyText,
+                time: getCurrentTime(),
+                type: "text",
+                avatar: "🐰"
+            });
+            if (currentRoom === "hj") {
+                renderChatRoom();
+                scrollToBottom();
+            }
+        }, 1200 + Math.random() * 1800);
+    }
+    
+    // 渲染WVS风格聊天室
     function renderChatRoom() {
         const container = document.getElementById('chatContainer');
         if (!container) return;
         
         let messages = [];
-        let roomName = "";
-        
-        if (currentRoom === "fans") {
-            messages = fansMessages;
-            roomName = "影迷聊天室";
-        } else if (currentRoom === "sy") {
-            messages = syMessages;
-            roomName = "申惟";
-        } else if (currentRoom === "hj") {
-            messages = hjMessages;
-            roomName = "韩振";
-        }
+        if (currentRoom === "fans") messages = fansMessages;
+        else if (currentRoom === "sy") messages = syMessages;
+        else messages = hjMessages;
         
         if (messages.length === 0) {
             container.innerHTML = `<div class="empty-chat">暂无消息，发一条吧~</div>`;
+            updatePresetButtons();
             return;
         }
         
         let html = '';
         for (let i = 0; i < messages.length; i++) {
             const msg = messages[i];
-            const isMe = msg.sender === "导演" || msg.isMine === true;
-            
-            if (isMe) {
-                // 导演自己发的消息
+            // 判断是否为自己发送的消息（导演发送的没有头像、右对齐）
+            if (msg.sender === "导演" || msg.isMine === true) {
                 html += `
-                    <div class="message-sent">
-                        <div class="bubble-sent">${escapeHtml(msg.text)}</div>
-                        <div class="message-time">${msg.time}</div>
+                    <div class="my-message">
+                        <div class="my-bubble">${escapeHtml(msg.text)}</div>
                     </div>
+                    <div class="message-time" style="text-align: right; margin-right: 8px;">${msg.time}</div>
                 `;
             } else {
-                // 对方发的消息
+                // 对方消息：显示头像 + 气泡
                 let contentHtml = '';
                 if (msg.type === "photo") {
-                    contentHtml = `<div class="photo-msg"><span>📷</span> ${escapeHtml(msg.photoDesc || '照片')}</div>`;
+                    contentHtml = `<div class="media-bubble"><span>📷</span> ${escapeHtml(msg.photoDesc || '照片')}</div>`;
                 } else if (msg.type === "voice") {
-                    contentHtml = `<div class="voice-msg"><span>🎤</span> 语音 ${msg.voiceLen || '0:06'}</div>`;
+                    contentHtml = `<div class="media-bubble"><span>🎤</span> 语音 ${msg.voiceLen || '0:06'}</div>`;
                 } else {
-                    contentHtml = `<div class="bubble-received">${escapeHtml(msg.text)}</div>`;
+                    contentHtml = `<div class="bubble">${escapeHtml(msg.text)}</div>`;
                 }
                 html += `
-                    <div class="message-received">
-                        <div class="sender-name">${escapeHtml(msg.sender)}</div>
-                        ${contentHtml}
-                        <div class="message-time">${msg.time}</div>
+                    <div class="message-row">
+                        <div class="avatar">${msg.avatar || (msg.sender === '申惟' ? '🐺' : '🐰')}</div>
+                        <div class="message-content">
+                            <div class="sender-name">${escapeHtml(msg.sender)}</div>
+                            ${contentHtml}
+                            <div class="message-time">${msg.time}</div>
+                        </div>
                     </div>
                 `;
             }
         }
-        
         container.innerHTML = html;
         updatePresetButtons();
     }
@@ -496,15 +593,12 @@
             if (m === '<') return '&lt;';
             if (m === '>') return '&gt;';
             return m;
-        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
-            return c;
         });
     }
     
     function updatePresetButtons() {
         const container = document.getElementById('presetBtns');
         if (!container) return;
-        
         let replies = presetReplies.fans;
         if (currentRoom === "sy") replies = presetReplies.sy;
         else if (currentRoom === "hj") replies = presetReplies.hj;
@@ -531,79 +625,36 @@
         }
     }
     
-    // 切换房间
     function switchRoom(room) {
         currentRoom = room;
-        // 更新tab样式
         document.querySelectorAll('.chat-tab').forEach(tab => {
-            if (tab.dataset.room === room) {
-                tab.classList.add('active');
-            } else {
-                tab.classList.remove('active');
-            }
+            if (tab.dataset.room === room) tab.classList.add('active');
+            else tab.classList.remove('active');
         });
         renderChatRoom();
         scrollToBottom();
     }
     
-    // 初始化定时器（模拟持续收到消息）
-    function startMessageSimulation() {
-        simulateFanMessage(); // 影迷群聊随机消息
-        // 申惟和韩振的主动消息（偶尔主动发）
-        setInterval(() => {
-            if (currentRoom !== "sy" && Math.random() < 0.3) {
-                // 后台消息也存，但不影响当前聊天体验
-                const activeMessages = [
-                    "导演，吃饭了吗", "今天的戏拍完了", "有点累", "明天见",
-                    "晚安", "导演在吗", "没什么事"
-                ];
-                const newMsg = {
-                    sender: "申惟",
-                    text: activeMessages[Math.floor(Math.random() * activeMessages.length)],
-                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                    type: "text"
-                };
-                syMessages.push(newMsg);
-                if (currentRoom === "sy") {
-                    renderChatRoom();
-                    scrollToBottom();
-                }
-            }
-        }, 15000);
-        
-        setInterval(() => {
-            if (currentRoom !== "hj" && Math.random() < 0.3) {
-                const activeMessages = [
-                    "导演！", "在干嘛呢", "我今天学了新歌", "想你了", "晚安~",
-                    "明天拍什么戏", "我有点紧张"
-                ];
-                const newMsg = {
-                    sender: "韩振",
-                    text: activeMessages[Math.floor(Math.random() * activeMessages.length)],
-                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                    type: "text"
-                };
-                hjMessages.push(newMsg);
-                if (currentRoom === "hj") {
-                    renderChatRoom();
-                    scrollToBottom();
-                }
-            }
-        }, 12000);
+    // 清理之前的定时器
+    function clearAllTimers() {
+        if (fansTimer) clearInterval(fansTimer);
+        if (simulateTimer) clearTimeout(simulateTimer);
     }
     
-    // 绑定事件
-    document.addEventListener('DOMContentLoaded', () => {
+    // 初始化
+    function init() {
+        clearAllTimers();
+        startFanMessagesLoop();
+        startActorMessages();
+        // 红果短剧剧情消息
+        setTimeout(pushDramaNews, 5000);
+        
         renderChatRoom();
         
-        // 绑定tab切换
         document.querySelectorAll('.chat-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                switchRoom(tab.dataset.room);
-            });
+            tab.addEventListener('click', () => switchRoom(tab.dataset.room));
         });
         
-        // 发送按钮
         const sendBtn = document.getElementById('sendBtn');
         const replyInput = document.getElementById('replyInput');
         if (sendBtn) {
@@ -620,9 +671,10 @@
                 }
             });
         }
-        
-        startMessageSimulation();
-    });
+    }
+    
+    init();
 </script>
 </body>
 </html>
+     
