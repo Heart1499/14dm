@@ -1,12 +1,12 @@
-以下是您所需的韩娱WVS风格DM模拟器的HTML代码。它实现了爱豆视角，支持设置昵称、发送消息，并能触发粉丝“一呼百应”的互动效果。
+以下是您所需的韩娱WVS风格DM模拟器的HTML代码。它针对手机显示优化，实现了消息翻译、粉丝“一呼百应”互动及界面居中布局。
 
 ```html
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WVS DM 模拟器 - 爱豆视角 · 一呼百应</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>WVS DM 模拟器 - 爱豆视角 · 一呼百应（中韩双语）</title>
     <style>
         * {
             margin: 0;
@@ -22,9 +22,11 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            margin: 0;
+            padding: 0;
         }
 
-        /* 手机容器 */
+        /* 手机容器 - 完美居中，宽度自适应手机 */
         .phone {
             width: 100%;
             max-width: 430px;
@@ -36,6 +38,7 @@
             position: relative;
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
             overflow: hidden;
+            margin: 0 auto; /* 确保居中 */
         }
 
         /* 状态栏 */
@@ -60,7 +63,6 @@
             padding: 10px 16px;
             background-color: #000;
             border-bottom: 0.5px solid #2c2c2e;
-            flex-wrap: wrap;
             gap: 8px;
         }
 
@@ -104,6 +106,7 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            flex-wrap: wrap;
         }
 
         .edit-name-btn {
@@ -113,7 +116,7 @@
             font-size: 12px;
             font-weight: 500;
             cursor: pointer;
-            padding: 2px 6px;
+            padding: 2px 8px;
             border-radius: 12px;
             background-color: #1c1c1e;
         }
@@ -145,7 +148,7 @@
         .message {
             display: flex;
             flex-direction: column;
-            max-width: 80%;
+            max-width: 85%;
             animation: fadeInUp 0.2s ease-out;
         }
 
@@ -205,6 +208,45 @@
             margin-right: 12px;
         }
 
+        /* 翻译按钮和样式 */
+        .translate-wrapper {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 2px;
+            margin-bottom: 2px;
+        }
+        .fan .translate-wrapper {
+            justify-content: flex-start;
+        }
+        .translate-btn {
+            background: none;
+            border: none;
+            color: #8e8e93;
+            font-size: 10px;
+            padding: 2px 6px;
+            cursor: pointer;
+            border-radius: 12px;
+            background-color: #1c1c1e;
+            margin-left: 6px;
+            margin-top: 2px;
+            font-weight: 500;
+        }
+        .translated-text {
+            font-size: 12px;
+            color: #a9a9b0;
+            margin-top: 4px;
+            padding-left: 12px;
+            padding-right: 12px;
+            border-left: 2px solid #3a3a3c;
+            word-break: break-word;
+        }
+        .fan .translated-text {
+            text-align: left;
+        }
+        .idol .translated-text {
+            text-align: right;
+        }
+
         /* 新消息按钮 */
         .scroll-to-bottom {
             position: absolute;
@@ -222,7 +264,7 @@
             font-weight: 500;
         }
 
-        /* 底部输入栏 (完全仿WVS，带发送功能) */
+        /* 底部输入栏 */
         .input-bar {
             background-color: #000;
             border-top: 0.5px solid #2c2c2e;
@@ -297,13 +339,13 @@
             margin-top: 40px;
         }
         
-        /* 一呼百应提示小toast */
+        /* 提示toast */
         .toast-message {
             position: absolute;
             bottom: 100px;
             left: 50%;
             transform: translateX(-50%);
-            background-color: rgba(28,28,30,0.9);
+            background-color: rgba(28,28,30,0.95);
             backdrop-filter: blur(8px);
             padding: 8px 18px;
             border-radius: 40px;
@@ -329,7 +371,6 @@
         <span>📶 🔋 100%</span>
     </div>
 
-    <!-- 头部包含名字编辑功能 -->
     <div class="header">
         <button class="back-btn" aria-label="返回">←</button>
         <div class="profile-area">
@@ -339,30 +380,28 @@
                     <span id="idolNameDisplay">나의 아이돌</span>
                     <button class="edit-name-btn" id="editNameBtn">✎ 설정</button>
                 </h2>
-                <p>✨ 粉丝 2.3k · 活跃中 ✨</p>
+                <p>✨ 粉丝 3.2k · 活跃中 ✨</p>
             </div>
         </div>
-        <div class="menu-icon">•••</div>
+        <divclass="menu-icon">•••</div>
     </div>
 
-    <!-- 聊天区域 -->
     <div class="chat-area" id="chatArea">
-        <div class="empty-chat" id="emptyMsgPlaceholder">💬 粉丝们正在涌入聊天室... 发条消息试试 "一呼百应" 💬</div>
+        <div class="empty-chat" id="emptyMsgPlaceholder">💬 粉丝们正在涌入... 发送消息试试「一呼百应」💬</div>
     </div>
 
     <div class="scroll-to-bottom" id="scrollBtn" style="display: none;">↓ 新消息</div>
 
-    <!-- 底部输入栏 可发送消息 -->
     <div class="input-bar">
         <div class="plus-btn">+</div>
-        <input type="text" class="message-input" id="messageInput" placeholder="向粉丝们发送消息..." autocomplete="off">
+        <input type="text" class="message-input" id="messageInput" placeholder="向粉丝发送消息..." autocomplete="off">
         <button class="send-btn" id="sendMsgBtn">发送</button>
     </div>
 </div>
 
 <script>
-    // ======================= 韩娱WVS DM模拟器 - 爱豆视角 + 一呼百应功能 =======================
-    // 粉丝池数据
+    // ======================= 韩娱WVS DM模拟器 - 爱豆视角 + 一呼百应 + 中韩翻译 =======================
+    // ---------- 粉丝池 ----------
     const fanNamesPool = [
         "✨정국이♡", "🌻LISA_보라", "🐱니키니키", "🌸지수야사랑해", "💎카리나팬", "🐯호시에 빠짐", 
         "🍓민지_최고", "🐰단이의_하나", "⭐️하니의_별", "🎸승관이밥줘", "🦊르세라핌_fi", "💜뷔_태태바보",
@@ -370,6 +409,7 @@
         "🍒해찬이_사랑", "💙제노야_최고", "🌸윈브_원영", "🐣케플러_샤오팅", "⭐️아이브_레이", "💗뉴진스_혜인"
     ];
     
+    // 韩文消息库 (粉丝随机发送)
     const fanMessageBank = [
         "오빠/언니 보고싶어요!!! ❤️❤️❤️",
         "오늘도 최고예요! 사랑해요 ♪(´▽｀)",
@@ -400,10 +440,67 @@
         "팬싸 가고싶어요 ㅠㅠㅠ",
         "저 아이돌 데뷔 준비중인데 롤모델이에요",
         "✨♥️ 언니 최고 존예 ♥️✨",
-        "🐰🐰🐰 토끼 귀요미"
+        "🐰🐰🐰 토끼 귀요미",
+        "💖 오늘 본방사수 했어요! 최고!"
     ];
     
     const emotes = ["😭💕", "🤍", "🐰💖", "✨✨", "🔥", "💎", "🌸", "🥺👉👈", "😍🔥", "🎀", "🎤", "💥", "💫"];
+    
+    // 简易韩译中（由于无法接入外部API，制作一个丰富的映射 + 智能匹配，确保翻译可读，增强体验）
+    // 核心翻译表 + 默认规则
+    const koToZhMap = {
+        "오빠/언니 보고싶어요": "哥哥/姐姐 我想你了",
+        "오늘도 최고예요! 사랑해요": "今天也是最棒的！我爱你",
+        "방금 새 앨범 들었어요 대박": "刚刚听了新专辑，太牛了",
+        "우리 팬들도 항상 응원해요": "我们粉丝也一直应援",
+        "DM 읽어주셔서 감사합니다": "感谢您读我的私信",
+        "와 진짜 사랑해요": "哇 真的好爱你",
+        "자니? 나는 잠이 안와": "睡了吗？我睡不着",
+        "투모로우 콘서트 가요!": "明天去演唱会！",
+        "인스타 릴스 봤어요 완전 멋져요": "看了ins reels，超级帅",
+        "어제 생방송 너무 재밌었어요": "昨天的直播太有趣了",
+        "화이팅!": "加油！",
+        "같은 공기 마셔서 행복해": "呼吸着同样的空气，好幸福",
+        "이모지 10개 보냅니다": "发送10个表情",
+        "항상 빛나는 별이 되어줘서 고마워": "谢谢你一直是闪耀的星星",
+        "하트뿅뿅": "爱心发射",
+        "오늘 하루도 힘내세요!": "今天也加油吧！",
+        "신곡 미쳤다": "新歌疯了",
+        "눈물나... 너무 감동이야": "流泪了...太感动了",
+        "우리 오빠/언니는 천재야": "我们的哥哥/姐姐是天才",
+        "빨리 한국 와줘!!!": "快点来韩国吧！！！",
+        "저는 대만 팬이에요 사랑해요": "我是台湾粉丝，爱你",
+        "일본에서도 응원합니다!": "在日本也支持你！",
+        "dm 와주셔서 영광입니다": "您能来私信是我的荣幸",
+        "우리 만나고 싶다": "想见你",
+        "목소리 너무 좋아요": "声音太好听了",
+        "팬싸 가고싶어요": "想去粉丝见面会",
+        "롤모델이에요": "是我的榜样",
+        "언니 최고 존예": "姐姐最棒 超美",
+        "토끼 귀요미": "兔子可爱鬼",
+        "본방사수 했어요! 최고!": "死守直播了！最棒！"
+    };
+    
+    function translateKoreanToChinese(koreanText) {
+        // 去掉尾部一些符号 先精确匹配最长词条
+        let result = koreanText;
+        for (let [ko, zh] of Object.entries(koToZhMap)) {
+            if (result.includes(ko)) {
+                result = result.replace(ko, zh);
+            }
+        }
+        // 如果还有残留韩文字符(简单处理 保留emoji)
+        if (result !== koreanText) {
+            // 保留emoji、感叹号等
+            return result;
+        } else {
+            // 没匹配到时，如果包含韩语则给一个默认翻译，否则原样
+            if (/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(koreanText)) {
+                return "💌 粉丝的暖心留言 (待翻译) 💌";
+            }
+            return koreanText;
+        }
+    }
     
     function randomItem(arr) {
         return arr[Math.floor(Math.random() * arr.length)];
@@ -411,7 +508,7 @@
     
     function getRandomTime() {
         const now = new Date();
-        const minutesAgo = Math.floor(Math.random() * 10);
+        const minutesAgo = Math.floor(Math.random() * 8);
         const date = new Date(now.getTime() - minutesAgo * 60 * 1000);
         return `${date.getHours().toString().padStart(2,'0')}:${date.getMinutes().toString().padStart(2,'0')}`;
     }
@@ -427,14 +524,14 @@
         return randomItem(fanNamesPool);
     }
     
-    // 全局数据
-    let messages = [];          // 存储消息 { id, type, senderName, content, time }
-    let idolName = "나의 아이돌";  // 默认爱豆名字
+    // 全局变量
+    let messages = [];          // { id, type, senderName, content, time, translatedCache }
+    let idolName = "🐰 카리나";
     let autoScrollEnabled = true;
+    let isBombActive = true;
     let bombIntervalId = null;
-    let isBombActive = true;     // 粉丝轰炸持续开启
     
-    // DOM 元素
+    // DOM
     const chatContainer = document.getElementById('chatArea');
     const emptyPlaceholder = document.getElementById('emptyMsgPlaceholder');
     const scrollBtn = document.getElementById('scrollBtn');
@@ -444,12 +541,32 @@
     const editNameBtn = document.getElementById('editNameBtn');
     const avatarEmoji = document.getElementById('avatarEmoji');
     
-    // 辅助函数
     function scrollToBottom() {
         if (chatContainer) {
             chatContainer.scrollTop = chatContainer.scrollHeight;
             autoScrollEnabled = true;
             if (scrollBtn) scrollBtn.style.display = 'none';
+        }
+    }
+    
+    // 翻译并渲染
+    function toggleTranslation(msgId, currentText, isFan) {
+        const msgElement = document.querySelector(`.message[data-id='${msgId}']`);
+        if (!msgElement) return;
+        let translatedDiv = msgElement.querySelector('.translated-text');
+        if (translatedDiv) {
+            translatedDiv.remove();
+            return;
+        }
+        const chinese = translateKoreanToChinese(currentText);
+        const transDiv = document.createElement('div');
+        transDiv.className = 'translated-text';
+        transDiv.innerText = `🇨🇳 ${chinese}`;
+        const bubbleWrapper = msgElement.querySelector('.bubble')?.parentNode;
+        if (bubbleWrapper) {
+            bubbleWrapper.appendChild(transDiv);
+        } else {
+            msgElement.appendChild(transDiv);
         }
     }
     
@@ -480,9 +597,21 @@
             timeSpan.classList.add('time-stamp');
             timeSpan.textContent = msg.time;
             
+            const translateWrapper = document.createElement('div');
+            translateWrapper.className = 'translate-wrapper';
+            const transBtn = document.createElement('button');
+            transBtn.textContent = '🔍 翻译';
+            transBtn.className = 'translate-btn';
+            transBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleTranslation(msg.id, msg.content, msg.type === 'fan');
+            });
+            translateWrapper.appendChild(transBtn);
+            
             messageDiv.appendChild(nameSpan);
             messageDiv.appendChild(bubbleDiv);
             messageDiv.appendChild(timeSpan);
+            messageDiv.appendChild(translateWrapper);
             chatContainer.appendChild(messageDiv);
         });
         
@@ -496,162 +625,100 @@
     function addMessage(type, senderName, content, time = null) {
         const newMsg = {
             id: Date.now() + Math.random() * 10000 + Math.random(),
-            type: type,   // 'fan' or 'idol'
+            type: type,
             senderName: senderName,
             content: content,
             time: time || getRandomTime()
         };
         messages.push(newMsg);
         renderMessages();
-        
         if (!autoScrollEnabled && scrollBtn) scrollBtn.style.display = 'flex';
-        
-        // 微震动
-        if (navigator.vibrate) navigator.vibrate(30);
+        if (navigator.vibrate) navigator.vibrate(20);
     }
     
-    // 粉丝轰炸：持续随机添加粉丝消息 (爱豆视角接收)
-    function startFanBombardment() {
-        if (bombIntervalId) clearInterval(bombIntervalId);
-        // 动态调整频率：主要使用setInterval + 随机间隔，但通过递归setTimeout更灵活
-        function fanLoop() {
-            if (!isBombActive) return;
-            const delay = Math.random() * 1300 + 400;  // 0.4~1.7秒一条，轰炸感
-            setTimeout(() => {
-                if (!isBombActive) return;
-                const randomFan = getRandomFanName();
-                const randomMsg = generateRandomFanMessage();
-                addMessage('fan', randomFan, randomMsg);
-                // 偶尔连续多发 (多重轰炸)
-                if (Math.random() > 0.75 && messages.length < 300) {
-                    setTimeout(() => {
-                        if (isBombActive) {
-                            const extraFan = getRandomFanName();
-                            const extraMsg = generateRandomFanMessage();
-                            addMessage('fan', extraFan, extraMsg);
-                        }
-                    }, 120);
-                }
-                if (Math.random() > 0.9 && messages.length < 300) {
-                    setTimeout(() => {
-                        if (isBombActive) {
-                            const tripleFan = getRandomFanName();
-                            const tripleMsg = generateRandomFanMessage() + " 💥💥";
-                            addMessage('fan', tripleFan, tripleMsg);
-                        }
-                    }, 220);
-                }
-                fanLoop();
-            }, delay);
-        }
-        fanLoop();
-        
-        // 额外每过6秒增加一条稍微特殊一点的消息 活跃气氛
-        setInterval(() => {
-            if (isBombActive && messages.length < 400) {
-                const specialFan = getRandomFanName();
-                const specialMsg = randomItem(["🎤 라이브 기대해요!!", "📸 셀카 보고싶어요 ❤️", "🌙 항상 응원합니다", "✨✨✨✨", "💌 DM 와줘서 고마워요"]);
-                addMessage('fan', specialFan, specialMsg);
-            }
-        }, 5800);
-    }
-    
-    // 一呼百应核心: 爱豆发送一条消息，触发大量粉丝响应（5~15条瞬间或短时间涌入）
+    // 一呼百应 - 粉丝大反应 (爱豆发送后触发大量回应，包含针对爱豆消息的智能反应)
     function oneCallManyResponse(idolMessageContent) {
-        const responseCount = Math.floor(Math.random() * 12) + 8;  // 8~20条回应，轰炸感
-        // 显示通知toast
+        const responseCount = Math.floor(Math.random() * 14) + 10;  // 10~24条，更加轰炸
         showToast(`✨ 一呼百应！ ${responseCount}位粉丝热情回应 ✨`);
         
-        // 粉丝回应消息池：结合原消息内容产生关联回应
-        const replyTemplates = [
-            `😭❤️ "${idolMessageContent}" 에 진심이야!!`,
-            `💖 언니/오빠 말 너무 공감해요!`,
-            `✨ 와... 진짜 멋져요 사랑해요!`,
+        // 根据爱豆消息内容生成关联回应 (中韩混用加强真实感)
+        let relatedReplies = [];
+        const msgLower = idolMessageContent.toLowerCase();
+        if (msgLower.includes('사랑') || msgLower.includes('❤️') || msgLower.includes('love') || msgLower.includes('爱')) {
+            relatedReplies = ["❤️🧡💛 우리도 사랑해요!!!", "💕 사랑은 영원하다", "😭❤️ 너무 달달해", "❤️ 역시 우리 아이돌 사랑해요", "💖 팬들도 당신을 사랑해요"];
+        }
+        if (msgLower.includes('고마워') || msgLower.includes('감사') || msgLower.includes('谢谢')) {
+            relatedReplies = ["😭 항상 고마워요! 우리가 더 감사해", "❤️ 언니가 있어서 행복해요", "🙏 감사합니다 아이돌님", "🌟 항상 감사드려요 사랑해요"];
+        }
+        if (msgLower.includes('힘내') || msgLower.includes('화이팅') || msgLower.includes('加油')) {
+            relatedReplies = ["💪💪 우리 같이 힘내요!!", "🔥🔥 오늘도 힘내세요!", "🙌 응원합니다!!", "💪 팬도 힘낼게요!"];
+        }
+        if (msgLower.includes('보고싶어') || msgLower.includes('미안') || msgLower.includes('想见')) {
+            relatedReplies = ["😭 저도 보고싶어요!", "🌸 얼른 만나요!!", "💖 보고싶어 죽겠다", "🥺 언제와요? 보고파"];
+        }
+        const defaultReplies = [
+            `😭❤️ "${idolMessageContent}" 너무 멋져요!!`,
+            `✨ 언니/오빠 말 대박 공감!`,
             `💎 나도 그래!!! 완전 짱👏`,
             `🌸 맞아요 ㅠㅠ 감동이에요`,
-            `🔥🔥🔥 화이팅!!!`,
+            `🔥🔥🔥 아이돌 최고!`,
+            `📣 우리 영원히 함께해요`,
             `🐰♥️ 최고다 최고!`,
-            `💬 나도 그렇게 생각해요!!!`,
-            `📣 언니 말 대박!`,
-            `💫 응원할게요 ~~`,
-            `✨❤️ 항상 행복하세요 ❤️✨`,
-            `🤍🤍🤍 진짜 멋진 말이야`,
-            `🎀 덕분에 힘내요!`,
-            `💪 같이 힘내자!!`,
-            `🌹 사랑해요 ♡♡`,
-            `💌 나도 너의 팬이야~~~`
+            `💬 정말 멋진 말씀✨`,
+            `🎀 덕분에 힘내요!`
         ];
+        const allReplies = [...defaultReplies, ...relatedReplies];
         
-        // 根据爱豆消息内容动态增加一些自定义回复
-        let customReplies = [];
-        if (idolMessageContent.includes("사랑") || idolMessageContent.includes("❤️") || idolMessageContent.includes("love")) {
-            customReplies = ["❤️🧡💛 우리도 사랑해요!!!", "💕 사랑은 영원하다", "😭❤️ 너무 달달해"];
-        }
-        if (idolMessageContent.includes("고마워") || idolMessageContent.includes("감사")) {
-            customReplies = ["😭 항상 고마워요! 우리가 더 감사해", "❤️ 언니가 있어서 행복해요", "🙏 감사합니다 아이돌님"];
-        }
-        if (idolMessageContent.includes("힘내") || idolMessageContent.includes("화이팅")) {
-            customReplies = ["💪💪 우리 같이 힘내요!!", "🔥🔥 오늘도 힘내세요!", "🙌 응원합니다!!"];
-        }
-        
-        const allReplies = [...replyTemplates, ...customReplies];
-        
-        // 分批发送响应 (瞬间涌入效果)
         let delay = 0;
         for (let i = 0; i < responseCount; i++) {
             setTimeout(() => {
-                if (!isBombActive) return; // 保持轰炸状态激活
+                if (!isBombActive) return;
                 let replyMsg;
                 if (Math.random() > 0.3) {
                     replyMsg = randomItem(allReplies);
                 } else {
-                    // 有些粉丝会发原本的狂热消息
                     replyMsg = generateRandomFanMessage();
                 }
                 const randomFan = getRandomFanName();
                 addMessage('fan', randomFan, replyMsg);
             }, delay);
-            delay += Math.random() * 180 + 60;  // 60~240ms递增，快速涌入
+            delay += Math.random() * 160 + 50;
         }
-        // 额外再最后引发一次小高潮 再过0.6秒后追加 3条额外狂热
+        // 额外再补一波狂热高潮
         setTimeout(() => {
-            for (let i=0; i<3; i++) {
+            for (let i=0; i<4; i++) {
                 setTimeout(() => {
                     if (isBombActive) {
                         const fanExtra = getRandomFanName();
-                        const exciteMsg = randomItem(["🔥🔥🔥 대박", "💥💥💥 아이돌 최고", "🎉🎉🎉 축하해요", "💖💖💖 사랑해", "🐰🐰❤️❤️"]);
+                        const exciteMsg = randomItem(["🔥🔥🔥 대박 이벤트", "💥💥💥 아이돌 짱", "🎉🎉🎉 축하해요", "💖💖💖 사랑해", "🐰🐰❤️❤️", "✨✨ 일확천다 ✨✨"]);
                         addMessage('fan', fanExtra, exciteMsg);
                     }
-                }, i * 150);
+                }, i * 180);
             }
-        }, 400);
+        }, 500);
     }
     
-    // 发送爱豆消息 (自己)
     function sendIdolMessage(content) {
         if (!content.trim()) return;
         const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         addMessage('idol', idolName, content.trim(), currentTime);
-        // 清空输入框
         messageInput.value = '';
-        // 一呼百应：粉丝们集体响应轰炸！！！
+        // 一呼百应核心
         oneCallManyResponse(content.trim());
-        // 附加额外: 爱豆发送消息后由于人气，短期增加后台轰炸密度, 但原轰炸持续已有, 无需额外，但为了效果，可额外触发一轮快速高响应
-        // 再手动快速调一点模拟
+        // 追加瞬间爆发感
         setTimeout(() => {
             if (isBombActive) {
-                for(let i=0;i<3;i++) {
+                for(let i=0;i<4;i++) {
                     setTimeout(() => {
                         const rushFan = getRandomFanName();
-                        const rushMsg = randomItem(["🔥🔥 바로 일어났어요!", "✨响应召唤✨", "❤️❤️❤️❤️", "대박 사건❤️"]);
+                        const rushMsg = randomItem(["🔥 바로 응답!","✨召唤响应✨","❤️❤️❤️❤️","대박 사건❤️","💌 아이돌 메시지💌"]);
                         addMessage('fan', rushFan, rushMsg);
-                    }, i*80);
+                    }, i*70);
                 }
             }
-        }, 200);
+        }, 150);
     }
     
-    // 显示toast
     function showToast(text) {
         const existingToast = document.querySelector('.toast-message');
         if(existingToast) existingToast.remove();
@@ -662,33 +729,29 @@
         setTimeout(() => toast.remove(), 2000);
     }
     
-    // 设置爱豆名字
     function setIdolName(newName) {
         if (newName && newName.trim() !== "") {
             idolName = newName.trim();
             idolNameSpan.innerText = idolName;
-            // 可选改avatar
             if(idolName.includes("🐰") || idolName.includes("토끼")) avatarEmoji.innerText = "🐰";
             else if(idolName.includes("🐱") || idolName.includes("고양이")) avatarEmoji.innerText = "🐱";
             else if(idolName.includes("🌟")) avatarEmoji.innerText = "🌟";
             else avatarEmoji.innerText = "⭐️";
-            showToast(`✨ 이름이 "${idolName}"(으)로 변경되었습니다 ✨`);
+            showToast(`✨ 名字变更为 "${idolName}" ✨`);
         } else {
-            showToast("이름을 입력해주세요!");
+            showToast("请输入名字!");
         }
     }
     
-    // 编辑名字弹窗 (仿iOS风格)
     function promptEditName() {
-        let newName = prompt("✨ 아티스트 이름을 설정하세요 ✨\n(예: 지민, 카리나, 해찬...)", idolName);
+        let newName = prompt("✨ 设置爱豆名字 ✨\n(例: Karina, Winter, 지민)", idolName);
         if (newName !== null && newName.trim() !== "") {
             setIdolName(newName);
-        } else if (newName !== null && newName.trim() === "") {
-            showToast("이름을 입력해주세요!");
+        } else if (newName !== null) {
+            showToast("名字不能为空!");
         }
     }
     
-    // 滚动监听
     function bindScrollEvents() {
         if (!chatContainer) return;
         chatContainer.addEventListener('scroll', () => {
@@ -703,49 +766,57 @@
         });
     }
     
-    // 清理旧消息限制（性能优化）
+    function startFanBombardment() {
+        function fanLoop() {
+            if (!isBombActive) return;
+            const delay = Math.random() * 1200 + 450;
+            setTimeout(() => {
+                if (!isBombActive) return;
+                const randomFan = getRandomFanName();
+                const randomMsg = generateRandomFanMessage();
+                addMessage('fan', randomFan, randomMsg);
+                if (Math.random() > 0.75 && messages.length < 350) {
+                    setTimeout(() => {
+                        if (isBombActive) addMessage('fan', getRandomFanName(), generateRandomFanMessage());
+                    }, 100);
+                }
+                fanLoop();
+            }, delay);
+        }
+        fanLoop();
+        setInterval(() => {
+            if (isBombActive && messages.length < 400) {
+                addMessage('fan', getRandomFanName(), randomItem(["🎤 라이브 기대해요!!", "📸 셀카 주세요 ❤️", "🌙 항상 응원합니다", "✨✨✨✨", "💌 DM 사랑해요"]));
+            }
+        }, 5800);
+    }
+    
     function maintainMessageLimit() {
         setInterval(() => {
-            if (messages.length > 280) {
-                messages = messages.slice(-240);
-                renderMessages();
-                if (!autoScrollEnabled) {
-                    // 保留滚动位置体验
-                }
-            }
-        }, 12000);
+            if (messages.length > 300) messages = messages.slice(-260);
+            renderMessages();
+        }, 15000);
     }
     
-    // 初次引导消息（让界面热闹）
-    function initialFloodMessages() {
+    function initialFlood() {
         setTimeout(() => {
-            for (let i = 0; i < 6; i++) {
+            for (let i=0;i<5;i++) {
                 setTimeout(() => {
-                    if (isBombActive) {
-                        const initFan = getRandomFanName();
-                        const initMsg = randomItem(["💖 안녕하세요! 아이돌님!", "🌸 데뷔 축하해요!!", "✨ 팬이에요 사랑해요", "🔥 대박나세요!!", "❤️ DM 열렸다!!", "🐰 첫 응원 왔어요"]);
-                        addMessage('fan', initFan, initMsg);
-                    }
-                }, i * 240);
+                    if (isBombActive) addMessage('fan', getRandomFanName(), randomItem(["💖 안녕하세요!", "🌸 데뷔 축하", "✨ 팬이에요", "🔥 응원합니다", "❤️ DM 왔어요"]));
+                }, i*220);
             }
-        }, 300);
+        }, 400);
     }
     
-    // 初始化
     function init() {
         bindScrollEvents();
         startFanBombardment();
         maintainMessageLimit();
-        initialFloodMessages();
-        
-        // 发送事件绑定
+        initialFlood();
         sendBtn.addEventListener('click', () => {
             const text = messageInput.value;
-            if (text.trim()) {
-                sendIdolMessage(text);
-            } else {
-                showToast("메시지를 입력하세요!");
-            }
+            if (text.trim()) sendIdolMessage(text);
+            else showToast("메시지를 입력하세요!");
         });
         messageInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
@@ -760,15 +831,9 @@
             autoScrollEnabled = true;
             scrollBtn.style.display = 'none';
         });
-        
-        // 返回按钮只是美化装饰
-        const backBtn = document.querySelector('.back-btn');
-        if(backBtn) backBtn.addEventListener('click', () => showToast("💌 WVS DM 一呼百应 모드 💌"));
-        
-        // 默认初始IDOL名字
-        setIdolName("🐰 윈터 🎀");
+        document.querySelector('.back-btn')?.addEventListener('click', () => showToast("💌 WVS DM 一呼百应 💌"));
+        setIdolName("🐰 카리나");
     }
-    
     init();
 </script>
 </body>
