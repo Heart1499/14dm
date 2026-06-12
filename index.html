@@ -1,12 +1,9 @@
-以下是您所需的韩娱WVS风格DM模拟器的HTML代码。它针对手机显示优化，实现了消息翻译、粉丝“一呼百应”互动及界面居中布局。
-
-```html
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>WVS DM 模拟器 - 爱豆视角 · 一呼百应（中韩双语）</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>小雨披导演 · 年上养成骨科片场</title>
     <style>
         * {
             margin: 0;
@@ -16,823 +13,626 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #000000;
+            background: #000000;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            padding: 12px;
         }
 
-        /* 手机容器 - 完美居中，宽度自适应手机 */
         .phone {
+            max-width: 400px;
             width: 100%;
-            max-width: 430px;
-            height: 100vh;
-            max-height: 932px;
-            background-color: #000;
+            height: 780px;
+            background: #000000;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-            overflow: hidden;
-            margin: 0 auto; /* 确保居中 */
         }
 
-        /* 状态栏 */
         .status-bar {
-            padding-top: 12px;
-            padding-bottom: 6px;
-            padding-left: 20px;
-            padding-right: 20px;
-            background-color: #000;
+            background: #000000;
+            padding: 12px 16px 8px;
             display: flex;
             justify-content: space-between;
             font-size: 14px;
             font-weight: 600;
-            color: white;
+            color: #ffffff;
         }
 
-        /* 头部: 包含设置名字区域 */
-        .header {
+        .chat-tabs {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 16px;
-            background-color: #000;
-            border-bottom: 0.5px solid #2c2c2e;
-            gap: 8px;
+            background: #000000;
+            padding: 8px 8px;
+            gap: 2px;
+            border-bottom: 0.5px solid #222222;
         }
-
-        .back-btn {
-            font-size: 24px;
-            color: #0a84ff;
+        .chat-tab {
+            flex: 1;
+            text-align: center;
+            padding: 8px 0;
+            font-size: 12px;
+            font-weight: 500;
+            color: #8e8e93;
             cursor: pointer;
-            background: none;
-            border: none;
-            line-height: 1;
+            border-radius: 8px;
+        }
+        .chat-tab.active {
+            color: #2c6b2f;
+            font-weight: 600;
+            background: #1a1a1a;
         }
 
-        .profile-area {
+        .progress-area {
+            padding: 8px 12px;
+            background: #0a0a0a;
+            border-bottom: 0.5px solid #222222;
+        }
+        .progress-row {
             display: flex;
             align-items: center;
             gap: 10px;
-            flex: 1;
+            margin-bottom: 6px;
         }
-
-        .avatar {
-            width: 38px;
-            height: 38px;
-            background-image: linear-gradient(135deg, #5e5ce0, #b86bff);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 18px;
-            color: white;
-        }
-
-        .info {
-            line-height: 1.3;
-        }
-
-        .info h2 {
-            font-size: 16px;
-            font-weight: 600;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
-        .edit-name-btn {
-            background: none;
-            border: none;
-            color: #0a84ff;
-            font-size: 12px;
-            font-weight: 500;
-            cursor: pointer;
-            padding: 2px 8px;
-            border-radius: 12px;
-            background-color: #1c1c1e;
-        }
-
-        .info p {
-            font-size: 11px;
+        .progress-label {
+            font-size: 10px;
             color: #8e8e93;
+            width: 65px;
+        }
+        .progress-bar-bg {
+            flex: 1;
+            height: 4px;
+            background: #2c2c2e;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+        .fill-sy { background: #d97838; }
+        .fill-hj { background: #c96f5e; }
+        .progress-value {
+            font-size: 10px;
+            color: #e2bc89;
+            width: 35px;
+            text-align: right;
         }
 
-        .menu-icon {
-            color: #0a84ff;
-            font-size: 20px;
-            font-weight: 500;
-        }
-
-        /* 聊天区域 */
-        .chat-area {
+        .chat-room {
             flex: 1;
             overflow-y: auto;
-            padding: 16px 12px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
-            scroll-behavior: smooth;
-            background-color: #000;
+            gap: 12px;
+            background: #000000;
         }
 
-        /* 消息通用 */
-        .message {
-            display: flex;
-            flex-direction: column;
-            max-width: 85%;
-            animation: fadeInUp 0.2s ease-out;
+        .studio-card {
+            background: #111111;
+            border-radius: 16px;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 0.5px solid #2c6b2f;
         }
-
-        /* 粉丝消息 (左侧) */
-        .message.fan {
-            align-items: flex-start;
-            align-self: flex-start;
-        }
-
-        /* 爱豆自己的消息 (右侧) */
-        .message.idol {
-            align-items: flex-end;
-            align-self: flex-end;
-        }
-
-        .bubble {
-            padding: 10px 14px;
+        .episode-badge {
+            background: #2c6b2f;
+            display: inline-block;
+            padding: 2px 10px;
             border-radius: 20px;
-            font-size: 15px;
-            line-height: 1.4;
-            word-break: break-word;
-            white-space: pre-wrap;
-        }
-
-        .fan .bubble {
-            background-color: #1c1c1e;
-            color: white;
-            border-top-left-radius: 6px;
-        }
-
-        .idol .bubble {
-            background-color: #0a84ff;
-            color: white;
-            border-top-right-radius: 6px;
-        }
-
-        .message-name {
-            font-size: 12px;
-            color: #8e8e93;
-            margin-bottom: 4px;
-            margin-left: 6px;
-            font-weight: 500;
-        }
-
-        .idol .message-name {
-            text-align: right;
-            margin-right: 6px;
-            margin-left: 0;
-            color: #0a84ff;
-        }
-
-        .time-stamp {
             font-size: 10px;
-            color: #636366;
-            margin-top: 4px;
-            margin-left: 12px;
-            margin-right: 12px;
+            margin-bottom: 8px;
         }
-
-        /* 翻译按钮和样式 */
-        .translate-wrapper {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 2px;
-            margin-bottom: 2px;
-        }
-        .fan .translate-wrapper {
-            justify-content: flex-start;
-        }
-        .translate-btn {
-            background: none;
-            border: none;
-            color: #8e8e93;
-            font-size: 10px;
-            padding: 2px 6px;
-            cursor: pointer;
-            border-radius: 12px;
-            background-color: #1c1c1e;
-            margin-left: 6px;
-            margin-top: 2px;
-            font-weight: 500;
-        }
-        .translated-text {
-            font-size: 12px;
-            color: #a9a9b0;
-            margin-top: 4px;
-            padding-left: 12px;
-            padding-right: 12px;
-            border-left: 2px solid #3a3a3c;
-            word-break: break-word;
-        }
-        .fan .translated-text {
-            text-align: left;
-        }
-        .idol .translated-text {
-            text-align: right;
-        }
-
-        /* 新消息按钮 */
-        .scroll-to-bottom {
-            position: absolute;
-            bottom: 80px;
-            right: 16px;
-            background: #1c1c1e;
-            border-radius: 30px;
-            padding: 6px 14px;
-            font-size: 12px;
-            color: #0a84ff;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            cursor: pointer;
-            backdrop-filter: blur(4px);
-            z-index: 10;
-            font-weight: 500;
-        }
-
-        /* 底部输入栏 */
-        .input-bar {
-            background-color: #000;
-            border-top: 0.5px solid #2c2c2e;
-            padding: 10px 12px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .plus-btn {
-            font-size: 24px;
-            color: #0a84ff;
-            cursor: default;
-        }
-
-        .message-input {
-            flex: 1;
-            background-color: #1c1c1e;
-            border: none;
-            border-radius: 30px;
-            padding: 10px 16px;
-            color: white;
-            font-size: 15px;
-            outline: none;
-        }
-
-        .message-input::placeholder {
-            color: #636366;
-        }
-
-        .send-btn {
-            background: none;
-            border: none;
-            color: #0a84ff;
-            font-weight: 600;
-            font-size: 15px;
-            cursor: pointer;
-            padding: 6px 10px;
-            transition: opacity 0.2s;
-        }
-
-        .send-btn:active {
-            opacity: 0.6;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(12px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .chat-area::-webkit-scrollbar {
-            width: 4px;
-        }
-        .chat-area::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .chat-area::-webkit-scrollbar-thumb {
-            background-color: #3a3a3c;
-            border-radius: 4px;
-        }
-
-        .empty-chat {
-            text-align: center;
-            color: #636366;
+        .studio-title {
             font-size: 14px;
-            margin-top: 40px;
+            font-weight: 600;
+            color: #e2bc89;
+            margin-bottom: 8px;
         }
-        
-        /* 提示toast */
-        .toast-message {
-            position: absolute;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(28,28,30,0.95);
-            backdrop-filter: blur(8px);
-            padding: 8px 18px;
-            border-radius: 40px;
+        .script-line {
+            background: #1c1c1e;
+            padding: 10px;
+            border-radius: 12px;
+            margin: 8px 0;
+            font-size: 12px;
+            color: #ffffff;
+            border-left: 3px solid #d97838;
+        }
+        .reaction-text {
+            font-size: 12px;
+            color: #b49470;
+            margin-top: 6px;
+            padding-left: 8px;
+        }
+        .directing-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .directing-option-btn {
+            background: #2c2c2e;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 10px;
             color: white;
-            font-size: 13px;
-            z-index: 20;
-            white-space: nowrap;
-            pointer-events: none;
-            animation: fadeOut 2s forwards;
+            font-size: 11px;
+            cursor: pointer;
+            flex: 1;
+            min-width: 90px;
         }
-        @keyframes fadeOut {
-            0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
-            15% { opacity: 1; transform: translateX(-50%) translateY(0); }
-            85% { opacity: 1; transform: translateX(-50%) translateY(0); }
-            100% { opacity: 0; transform: translateX(-50%) translateY(-10px); visibility: hidden; }
+        .directing-option-btn:active { background: #3a3a3c; }
+        
+        .message-row { display: flex; gap: 8px; align-items: flex-start; }
+        .avatar { width: 32px; height: 32px; background: #2c2c2e; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+        .message-content { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+        .sender-name { font-size: 12px; font-weight: 600; color: #8e8e93; }
+        .bubble { background: #1c1c1e; padding: 10px 14px; border-radius: 18px; border-top-left-radius: 4px; color: #ffffff; font-size: 13px; line-height: 1.4; word-break: break-word; }
+        .my-message { display: flex; justify-content: flex-end; margin: 4px 0; }
+        .my-bubble { background: #2c6b2f; padding: 10px 14px; border-radius: 18px; border-top-right-radius: 4px; color: #ffffff; font-size: 13px; max-width: 80%; word-break: break-word; }
+        .message-time { font-size: 9px; color: #5c5c5e; margin-top: 2px; }
+
+        .preset-btns { display: flex; gap: 8px; padding: 10px 12px; background: #000000; overflow-x: auto; border-top: 0.5px solid #222222; }
+        .preset-btn { background: #222222; border: none; border-radius: 20px; padding: 6px 14px; color: #ffffff; font-size: 12px; white-space: nowrap; cursor: pointer; }
+
+        .reply-area { background: #000000; padding: 10px 12px; display: flex; gap: 8px; border-top: 0.5px solid #222222; }
+        .reply-input { flex: 1; background: #1c1c1e; border: none; border-radius: 20px; padding: 10px 14px; color: #ffffff; font-size: 14px; outline: none; }
+        .send-btn { background: #2c6b2f; border: none; border-radius: 20px; padding: 8px 18px; color: white; font-weight: 600; font-size: 14px; cursor: pointer; }
+
+        .name-set-area { background: #0a0a0a; padding: 8px 12px; display: flex; gap: 8px; align-items: center; border-bottom: 0.5px solid #222222; }
+        .name-label { font-size: 11px; color: #8e8e93; }
+        .name-input { flex: 1; background: #1c1c1e; border: none; border-radius: 16px; padding: 6px 12px; color: #ffffff; font-size: 12px; outline: none; }
+        .name-confirm { background: #2c2c2e; border: none; border-radius: 16px; padding: 5px 12px; color: white; font-size: 11px; cursor: pointer; }
+
+        .ending-box {
+            background: #221c16e0;
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            padding: 18px;
+            text-align: center;
+            margin: 14px 0;
+            border: 1px solid #e5a362;
         }
+        .reset-btn {
+            background: #4f3824;
+            border: none;
+            padding: 6px 20px;
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 12px;
+        }
+        .badge-area { display: flex; justify-content: center; gap: 12px; margin-top: 12px; }
+        .ending-badge { background: #3d2c1f; padding: 4px 12px; border-radius: 30px; font-size: 11px; }
+        
+        .empty-chat { text-align: center; color: #5c5c5e; padding: 40px 20px; font-size: 13px; }
+        .chat-room::-webkit-scrollbar { width: 4px; }
+        .chat-room::-webkit-scrollbar-track { background: #1c1c1e; }
+        .chat-room::-webkit-scrollbar-thumb { background: #3a3a3c; border-radius: 4px; }
     </style>
 </head>
 <body>
 <div class="phone">
-    <div class="status-bar">
-        <span>9:41</span>
-        <span>📶 🔋 100%</span>
+    <div class="status-bar"><span>9:41</span><span>📶 🔋</span></div>
+    <div class="name-set-area">
+        <span class="name-label">🎬 导演署名</span>
+        <input type="text" class="name-input" id="directorNameInput" value="小雨披导演">
+        <button class="name-confirm" id="confirmNameBtn">确认</button>
     </div>
-
-    <div class="header">
-        <button class="back-btn" aria-label="返回">←</button>
-        <div class="profile-area">
-            <div class="avatar" id="avatarEmoji">🐰</div>
-            <div class="info">
-                <h2>
-                    <span id="idolNameDisplay">나의 아이돌</span>
-                    <button class="edit-name-btn" id="editNameBtn">✎ 설정</button>
-                </h2>
-                <p>✨ 粉丝 3.2k · 活跃中 ✨</p>
-            </div>
-        </div>
-        <divclass="menu-icon">•••</div>
+    <div class="progress-area">
+        <div class="progress-row"><span class="progress-label">🦒 申惟对韩振</span><div class="progress-bar-bg"><div class="progress-bar-fill fill-sy" id="syProgress" style="width:20%"></div></div><span class="progress-value" id="syProgressVal">20%</span></div>
+        <div class="progress-row"><span class="progress-label">🐰 韩振对申惟</span><div class="progress-bar-bg"><div class="progress-bar-fill fill-hj" id="hjProgress" style="width:25%"></div></div><span class="progress-value" id="hjProgressVal">25%</span></div>
     </div>
-
-    <div class="chat-area" id="chatArea">
-        <div class="empty-chat" id="emptyMsgPlaceholder">💬 粉丝们正在涌入... 发送消息试试「一呼百应」💬</div>
+    <div class="chat-tabs">
+        <div class="chat-tab active" data-room="fans">💬 影迷聊天室</div>
+        <div class="chat-tab" data-room="direct">🎬 导戏·片场</div>
     </div>
-
-    <div class="scroll-to-bottom" id="scrollBtn" style="display: none;">↓ 新消息</div>
-
-    <div class="input-bar">
-        <div class="plus-btn">+</div>
-        <input type="text" class="message-input" id="messageInput" placeholder="向粉丝发送消息..." autocomplete="off">
-        <button class="send-btn" id="sendMsgBtn">发送</button>
+    <div id="chatContainer" class="chat-room"></div>
+    <div class="preset-btns" id="presetBtns"></div>
+    <div class="reply-area">
+        <input type="text" id="replyInput" class="reply-input" placeholder="输入消息...">
+        <button id="sendBtn" class="send-btn">发送</button>
     </div>
 </div>
 
 <script>
-    // ======================= 韩娱WVS DM模拟器 - 爱豆视角 + 一呼百应 + 中韩翻译 =======================
-    // ---------- 粉丝池 ----------
-    const fanNamesPool = [
-        "✨정국이♡", "🌻LISA_보라", "🐱니키니키", "🌸지수야사랑해", "💎카리나팬", "🐯호시에 빠짐", 
-        "🍓민지_최고", "🐰단이의_하나", "⭐️하니의_별", "🎸승관이밥줘", "🦊르세라핌_fi", "💜뷔_태태바보",
-        "🥨엔하이픈_정원", "🐧아이들_미연", "🌙소녀시대영원", "🐥채영이짱", "🥹윈터_겨울왕국", "🔥르세라핌_김채원",
-        "🍒해찬이_사랑", "💙제노야_최고", "🌸윈브_원영", "🐣케플러_샤오팅", "⭐️아이브_레이", "💗뉴진스_혜인"
+    // ========== 年上养成骨科剧情（8集） ==========
+    let currentEpisodeIdx = 0;
+    let gameFinished = false;
+    let endingShown = false;
+    
+    let syToHj = 20;
+    let hjToSy = 25;
+    
+    let directorName = "小雨披导演";
+    let currentRoom = "fans";
+    
+    const episodes = [
+        {
+            title: "第1集 他是被领养的哥哥",
+            script: "韩振被领养到申惟家第一天。申惟站在门口，韩振低着头不敢看他。申惟说「进来吧」。",
+            options: [
+                { text: "让申惟主动拉他手", syEffect: 5, hjEffect: 3, reaction: "申惟犹豫了一下，伸手了。韩振握住，抬头看了他一眼。申惟别过脸「别哭了」。韩振说「我没哭」。" },
+                { text: "让韩振先说谢谢", syEffect: 2, hjEffect: 5, reaction: "韩振小声说「谢谢哥哥」。申惟嗯了一声，帮他把行李箱拎进去。韩振跟在后面看申惟的背影。" },
+                { text: "加一场对视", syEffect: 4, hjEffect: 4, reaction: "对视的时候韩振先笑了，申惟愣了一下也笑了。申惟说「走吧，带你去房间」。韩振跟上去了。" },
+                { text: "让申惟摸他头", syEffect: 6, hjEffect: 2, reaction: "申惟手抬起来又放下去，最后还是摸了。韩振没躲。申惟说「以后这里就是你家了」。韩振点头。" }
+            ],
+            afterReaction: "这场拍完韩振去给申惟递了水。申惟说「不用」。韩振说「哥你拿着吧」。申惟接了。",
+            behind: "韩振：哥，你觉得我演得怎么样。申惟：还行。韩振：就还行？申惟：……挺好的。韩振笑了。"
+        },
+        {
+            title: "第2集 一起上学",
+            script: "申惟骑车载韩振上学。韩振坐在后座，手不知道放哪。",
+            options: [
+                { text: "让韩振抱住申惟的腰", syEffect: 5, hjEffect: 5, reaction: "韩振搂上去的时候申惟僵了一下。韩振说「哥，你骑慢点」。申惟说「嗯」。" },
+                { text: "让申惟主动说抓紧我", syEffect: 6, hjEffect: 3, reaction: "申惟说「抓紧我，别摔了」。韩振抓住申惟的衣服下摆。申惟说「抓紧点」。韩振又往前靠了靠。" },
+                { text: "加一句台词", syEffect: 3, hjEffect: 7, reaction: "韩振说「哥，你身上好香」。申惟耳朵红了。韩振说完自己也不好意思了。" },
+                { text: "拍申惟的侧脸特写", syEffect: 4, hjEffect: 4, reaction: "韩振盯着申惟的侧脸看。申惟发现了，没回头。韩振赶紧低下头。申惟嘴角动了一下。" }
+            ],
+            afterReaction: "这场拍完申惟帮韩振把书包拿下来。韩振说「谢谢哥」。申惟说「不用谢」。",
+            behind: "韩振：哥，你骑车载我的时候紧张吗。申惟：不紧张。韩振：那我搂你的时候呢。申惟：……别问了。韩振：哦。"
+        },
+        {
+            title: "第3集 弟弟被人欺负",
+            script: "申惟看到韩振被同学欺负，冲上去护住他。",
+            options: [
+                { text: "让申惟挡在前面", syEffect: 8, hjEffect: 3, reaction: "韩振躲在申惟身后拽着他的衣角。申惟说「谁敢动他」。对方走了之后韩振还在发抖。" },
+                { text: "让韩振抱住申惟哭", syEffect: 3, hjEffect: 8, reaction: "韩振哭得说不出话。申惟拍了拍他的背说「别哭了」。韩振说「哥，谢谢你」。申惟没说话但手没松开。" },
+                { text: "申惟替他打架", syEffect: 7, hjEffect: 4, reaction: "申惟推完人回头看韩振。韩振说「哥你没事吧」。申惟说「没事」。韩振伸手帮申惟理了理领子。" },
+                { text: "拍申惟眼神特写", syEffect: 5, hjEffect: 5, reaction: "申惟看到韩振脸上的伤，眼神变了。韩振说「哥，我没事」。申惟没说话，带他走了。" }
+            ],
+            afterReaction: "这场拍完申惟带韩振去医务室。韩振说「哥，你对我真好」。申惟说「别废话」。",
+            behind: "申惟：你刚才哭的时候是认真的吗。韩振：嗯，想到如果真的有哥哥这样护着我，我会哭。申惟：……那你现在有哥哥了。韩振：哥你说什么？申惟：没什么。"
+        },
+        {
+            title: "第4集 心跳加速",
+            script: "韩振发烧了，申惟整夜照顾他。韩振迷迷糊糊说「哥，别走」。",
+            options: [
+                { text: "让申惟握住他的手", syEffect: 7, hjEffect: 4, reaction: "韩振睡着了还抓着申惟的手。申惟没抽开。天亮韩振醒了看到申惟趴在床边睡着了。" },
+                { text: "让申惟摸他额头", syEffect: 5, hjEffect: 5, reaction: "申惟摸额头的时候韩振突然睁开眼。韩振说「哥，你在啊」。申惟说「嗯」。韩振笑了。" },
+                { text: "加一句台词", syEffect: 4, hjEffect: 8, reaction: "韩振问「哥，你是不是喜欢我」。申惟没回答，把被子给他盖好说「睡吧」。韩振没再问。" },
+                { text: "拍申惟背影", syEffect: 6, hjEffect: 4, reaction: "韩振盯着申惟的背影看了很久。申惟回头看到他在看，说「怎么了」。韩振摇头「没什么」。"
+            ],
+            afterReaction: "这场拍完韩振退烧了。申惟说「以后注意身体」。韩振说「知道了，哥」。",
+            behind: "韩振：哥，你昨晚真的守了我一夜吗。申惟：没有。韩振：那我醒来怎么看到你在旁边。申惟：……刚好路过。韩振：凌晨三点路过我房间？申惟转移了话题。"
+        },
+        {
+            title: "第5集 第一次冷战",
+            script: "韩振看到申惟和别人走得很近，赌气不理他。",
+            options: [
+                { text: "让申惟主动找他", syEffect: 8, hjEffect: 3, reaction: "申惟敲了很久门，韩振才开。申惟说「你怎么了」。韩振说「没怎么」。申惟说「骗人」。" },
+                { text: "让韩振先开口", syEffect: 3, hjEffect: 7, reaction: "韩振说「哥，你和那个人什么关系」。申惟愣了一下说「同学」。韩振说「哦」。申惟说「吃醋了？」韩振脸红了。" },
+                { text: "加一场拉扯戏", syEffect: 5, hjEffect: 6, reaction: "申惟要走，韩振拽着他袖子。申惟说「放开」。韩振说「不放」。申惟叹了口气，没走。" },
+                { text: "拍两人背对背", syEffect: 4, hjEffect: 4, reaction: "坐了很久，申惟先说「吃饭了」。韩振说「不饿」。申惟说「不吃拉倒」。韩振跟出去了。" }
+            ],
+            afterReaction: "这场拍完两人一起吃饭。韩振给申惟夹了菜。申惟吃了。",
+            behind: "申惟：你刚才是不是真的生气了。韩振：有一点。申惟：为什么。韩振：因为看到你和别人走得近。申惟：那个人是剧组的同事。韩振：哦。申惟：以后不会了。"
+        },
+        {
+            title: "第6集 生日惊喜",
+            script: "韩振偷偷给申惟准备了生日礼物，是一条围巾。",
+            options: [
+                { text: "让申惟当场戴上", syEffect: 8, hjEffect: 4, reaction: "韩振看到申惟戴上了，眼睛亮了。申惟说「还行」。韩振说「我织了很久」。申惟说「知道了」。韩振笑了。" },
+                { text: "让韩振害羞", syEffect: 3, hjEffect: 7, reaction: "韩振把礼物塞给申惟就跑。申惟打开看到是围巾，追出去。韩振躲在楼梯间。申惟说「跑什么」。韩振说「怕你不喜欢」。申惟说「喜欢」。" },
+                { text: "加一句台词", syEffect: 5, hjEffect: 6, reaction: "韩振说「哥，生日快乐，我以后每年都给你过」。申惟愣了一下说「好」。" },
+                { text: "拍申惟眼神", syEffect: 6, hjEffect: 4, reaction: "申惟盯着围巾看了很久。韩振说「哥，你不喜欢吗」。申惟说「没有」。韩振说「那你戴给我看看」。申惟戴了。" }
+            ],
+            afterReaction: "这场拍完申惟一直围着那条围巾。韩振看到了一直在笑。",
+            behind: "申惟：你什么时候学的织围巾。韩振：偷偷学的，学了好几个月。申惟：为什么。韩振：因为哥的生日快到了。申惟：……谢谢。韩振：哥你说什么。申惟：没什么。"
+        },
+        {
+            title: "第7集 毕业典礼",
+            script: "申惟要毕业了，韩振送他到校门口。",
+            options: [
+                { text: "让韩振说等我", syEffect: 5, hjEffect: 7, reaction: "韩振说「哥，等我考上你的学校」。申惟说「你考得上吗」。韩振说「为了你我也要考上」。申惟笑了一下说「好，等你」。" },
+                { text: "让申惟摸他头", syEffect: 7, hjEffect: 3, reaction: "韩振被摸了头没躲，说「哥，我会想你的」。申惟说「周末可以见面」。韩振说「那说好了」。" },
+                { text: "加一场拥抱", syEffect: 6, hjEffect: 6, reaction: "韩振抱上去的时候申惟僵了一下，然后拍了拍他的背。韩振说「哥，你等我」。申惟说「嗯」。" },
+                { text: "拍申惟背影", syEffect: 4, hjEffect: 5, reaction: "申惟走了几步回头看了一眼，韩振还在原地挥手。申惟也挥了一下手，转身走了。" }
+            ],
+            afterReaction: "这场拍完申惟走了。韩振在校门口站了很久才回去。",
+            behind: "韩振：哥，杀青之后我们还会见面吗。申惟：会。韩振：你保证。申惟：保证。韩振：那我们拉钩。申惟：幼稚。但还是伸手了。"
+        },
+        {
+            title: "第8集 告白",
+            script: "韩振考上申惟的大学了。在学校门口，他拉住申惟的手。",
+            options: [
+                { text: "让韩振直接告白", syEffect: 6, hjEffect: 8, reaction: "韩振说「哥，我喜欢你，不是弟弟对哥哥那种」。申惟说「我知道」。韩振说「你知道？多久了」。申惟没回答。" },
+                { text: "让申惟主动牵手", syEffect: 8, hjEffect: 4, reaction: "申惟沉默了很久，然后反握住了韩振的手。韩振说「哥，你这是」。申惟说「别说话」。韩振笑了。" },
+                { text: "加一场拥抱", syEffect: 7, hjEffect: 6, reaction: "申惟把韩振拉进怀里说「我也喜欢你」。韩振说「哥，你说什么」。申惟说「没听见算了」。韩振说「听见了听见了」。" },
+                { text: "开放式结局", syEffect: 5, hjEffect: 5, reaction: "两人对视了很久。韩振先笑了，申惟也笑了。什么都没说，但手一直牵着。导演喊卡之后两人都没松手。" }
+            ],
+            afterReaction: "这场拍完导演喊卡，两人还站在一起。韩振说「哥，杀青了」。申惟说「嗯」。韩振说「以后还能见面吗」。申惟说「能」。",
+            behind: "韩振：哥，你刚才那句「我也喜欢你」是剧本里的吗。申惟：不是。韩振：那你为什么说。申惟：……因为是真的。韩振愣了一下。申惟：走吧，杀青宴要开始了。"
+        }
     ];
     
-    // 韩文消息库 (粉丝随机发送)
-    const fanMessageBank = [
-        "오빠/언니 보고싶어요!!! ❤️❤️❤️",
-        "오늘도 최고예요! 사랑해요 ♪(´▽｀)",
-        "방금 새 앨범 들었어요 대박...😭😭",
-        "우리 팬들도 항상 응원해요!!",
-        "DM 읽어주셔서 감사합니다ㅠㅠ",
-        "와 진짜 사랑해요 ㅠㅠ❤️",
-        "자니? 나는 잠이 안와ㅠㅠ",
-        "투모로우 콘서트 가요!💃",
-        "인스타 릴스 봤어요 완전 멋져요",
-        "어제 생방송 너무 재밌었어요😍",
-        "❤️‍🔥❤️‍🔥❤️‍🔥 화이팅!",
-        "같은 공기 마셔서 행복해❤️",
-        "이모지 10개 보냅니다 🎉🎉🎉",
-        "항상 빛나는 별이 되어줘서 고마워",
-        "하트뿅뿅 💖💖💖",
-        "오늘 하루도 힘내세요!",
-        "신곡 미쳤다 ... 플레이리스트에 추가",
-        "눈물나... 너무 감동이야 😭",
-        "우리 오빠/언니는 천재야!",
-        "❤️❤️❤️❤️❤️❤️❤️❤️",
-        "빨리 한국 와줘!!!",
-        "저는 대만 팬이에요 사랑해요",
-        "일본에서도 응원합니다!",
-        "dm 와주셔서 영광입니다ㅠ",
-        "우리 만나고 싶다 ㅠㅠ",
-        "목소리 너무 좋아요 🩷",
-        "팬싸 가고싶어요 ㅠㅠㅠ",
-        "저 아이돌 데뷔 준비중인데 롤모델이에요",
-        "✨♥️ 언니 최고 존예 ♥️✨",
-        "🐰🐰🐰 토끼 귀요미",
-        "💖 오늘 본방사수 했어요! 최고!"
+    // ========== 影迷聊天室 ==========
+    let fansMessages = [];
+    const cpFanNames = ["1499持续关注", "锐化的原因吧", "雕蛙保护协会", "锐因是真的", "羊兔主义", "家产今天有没有一起睡", "默认用户", "syhj99", "年上养成系", "骨科研究协会"];
+    const cpFanAvatars = ["🍿", "🦒", "🐰", "🎬", "🌟", "🌸", "🎵", "📸", "🎭", "💕"];
+    
+    function getRandomCpName() { return cpFanNames[Math.floor(Math.random() * cpFanNames.length)]; }
+    function getRandomCpAvatar() { return cpFanAvatars[Math.floor(Math.random() * cpFanAvatars.length)]; }
+    function getCurrentTime() { return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
+    
+    const fanMsgPool = [
+        "导演！年上养成太好嗑了", "申惟那个眼神我死了", "韩振说「哥」的时候我心都化了", "第4集发烧照顾我哭死", "第6集围巾礼物也太纯情了", "第8集告白我看了100遍", "骨科禁忌恋yyds", "导演花絮什么时候放", "他们好配", "1499！锐因是真的", "第3集申惟护着韩振那里我反复看", "第7集毕业典礼我哭成狗", "第5集冷战申惟主动去找韩振好戳我", "第1集摸头杀我没了", "第2集后座抱腰也太甜了"
     ];
     
-    const emotes = ["😭💕", "🤍", "🐰💖", "✨✨", "🔥", "💎", "🌸", "🥺👉👈", "😍🔥", "🎀", "🎤", "💥", "💫"];
+    const officialNotices = [
+        "【短剧官方】《是哥哥是男友》第1集已上线！", "【短剧官方】第2集更新：一起上学的青春", "【短剧官方】第3集：哥哥护弟名场面", "【短剧官方】第4集：发烧照顾，心动时刻", "【短剧官方】第5集：冷战和好，感情升温", "【短剧官方】第6集：生日惊喜，围巾定情", "【短剧官方】第7集：毕业分离，约定未来", "【短剧官方】第8集大结局：告白，双向奔赴"
+    ];
     
-    // 简易韩译中（由于无法接入外部API，制作一个丰富的映射 + 智能匹配，确保翻译可读，增强体验）
-    // 核心翻译表 + 默认规则
-    const koToZhMap = {
-        "오빠/언니 보고싶어요": "哥哥/姐姐 我想你了",
-        "오늘도 최고예요! 사랑해요": "今天也是最棒的！我爱你",
-        "방금 새 앨범 들었어요 대박": "刚刚听了新专辑，太牛了",
-        "우리 팬들도 항상 응원해요": "我们粉丝也一直应援",
-        "DM 읽어주셔서 감사합니다": "感谢您读我的私信",
-        "와 진짜 사랑해요": "哇 真的好爱你",
-        "자니? 나는 잠이 안와": "睡了吗？我睡不着",
-        "투모로우 콘서트 가요!": "明天去演唱会！",
-        "인스타 릴스 봤어요 완전 멋져요": "看了ins reels，超级帅",
-        "어제 생방송 너무 재밌었어요": "昨天的直播太有趣了",
-        "화이팅!": "加油！",
-        "같은 공기 마셔서 행복해": "呼吸着同样的空气，好幸福",
-        "이모지 10개 보냅니다": "发送10个表情",
-        "항상 빛나는 별이 되어줘서 고마워": "谢谢你一直是闪耀的星星",
-        "하트뿅뿅": "爱心发射",
-        "오늘 하루도 힘내세요!": "今天也加油吧！",
-        "신곡 미쳤다": "新歌疯了",
-        "눈물나... 너무 감동이야": "流泪了...太感动了",
-        "우리 오빠/언니는 천재야": "我们的哥哥/姐姐是天才",
-        "빨리 한국 와줘!!!": "快点来韩国吧！！！",
-        "저는 대만 팬이에요 사랑해요": "我是台湾粉丝，爱你",
-        "일본에서도 응원합니다!": "在日本也支持你！",
-        "dm 와주셔서 영광입니다": "您能来私信是我的荣幸",
-        "우리 만나고 싶다": "想见你",
-        "목소리 너무 좋아요": "声音太好听了",
-        "팬싸 가고싶어요": "想去粉丝见面会",
-        "롤모델이에요": "是我的榜样",
-        "언니 최고 존예": "姐姐最棒 超美",
-        "토끼 귀요미": "兔子可爱鬼",
-        "본방사수 했어요! 최고!": "死守直播了！最棒！"
-    };
+    let officialIndex = 0;
+    let fansInterval = null;
+    let officialInterval = null;
     
-    function translateKoreanToChinese(koreanText) {
-        // 去掉尾部一些符号 先精确匹配最长词条
-        let result = koreanText;
-        for (let [ko, zh] of Object.entries(koToZhMap)) {
-            if (result.includes(ko)) {
-                result = result.replace(ko, zh);
-            }
-        }
-        // 如果还有残留韩文字符(简单处理 保留emoji)
-        if (result !== koreanText) {
-            // 保留emoji、感叹号等
-            return result;
-        } else {
-            // 没匹配到时，如果包含韩语则给一个默认翻译，否则原样
-            if (/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(koreanText)) {
-                return "💌 粉丝的暖心留言 (待翻译) 💌";
-            }
-            return koreanText;
+    function sendOfficialNotice() {
+        if(officialIndex < officialNotices.length) {
+            fansMessages.push({ sender: "短剧官方", text: officialNotices[officialIndex], time: getCurrentTime(), type: "text", avatar: "🍎" });
+            officialIndex++;
         }
     }
     
-    function randomItem(arr) {
-        return arr[Math.floor(Math.random() * arr.length)];
-    }
-    
-    function getRandomTime() {
-        const now = new Date();
-        const minutesAgo = Math.floor(Math.random() * 8);
-        const date = new Date(now.getTime() - minutesAgo * 60 * 1000);
-        return `${date.getHours().toString().padStart(2,'0')}:${date.getMinutes().toString().padStart(2,'0')}`;
-    }
-    
-    function generateRandomFanMessage() {
-        let base = randomItem(fanMessageBank);
-        if (Math.random() > 0.7) base += " " + randomItem(emotes);
-        if (Math.random() > 0.8) base += "!!!";
-        return base;
-    }
-    
-    function getRandomFanName() {
-        return randomItem(fanNamesPool);
-    }
-    
-    // 全局变量
-    let messages = [];          // { id, type, senderName, content, time, translatedCache }
-    let idolName = "🐰 카리나";
-    let autoScrollEnabled = true;
-    let isBombActive = true;
-    let bombIntervalId = null;
-    
-    // DOM
-    const chatContainer = document.getElementById('chatArea');
-    const emptyPlaceholder = document.getElementById('emptyMsgPlaceholder');
-    const scrollBtn = document.getElementById('scrollBtn');
-    const messageInput = document.getElementById('messageInput');
-    const sendBtn = document.getElementById('sendMsgBtn');
-    const idolNameSpan = document.getElementById('idolNameDisplay');
-    const editNameBtn = document.getElementById('editNameBtn');
-    const avatarEmoji = document.getElementById('avatarEmoji');
-    
-    function scrollToBottom() {
-        if (chatContainer) {
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-            autoScrollEnabled = true;
-            if (scrollBtn) scrollBtn.style.display = 'none';
-        }
-    }
-    
-    // 翻译并渲染
-    function toggleTranslation(msgId, currentText, isFan) {
-        const msgElement = document.querySelector(`.message[data-id='${msgId}']`);
-        if (!msgElement) return;
-        let translatedDiv = msgElement.querySelector('.translated-text');
-        if (translatedDiv) {
-            translatedDiv.remove();
-            return;
-        }
-        const chinese = translateKoreanToChinese(currentText);
-        const transDiv = document.createElement('div');
-        transDiv.className = 'translated-text';
-        transDiv.innerText = `🇨🇳 ${chinese}`;
-        const bubbleWrapper = msgElement.querySelector('.bubble')?.parentNode;
-        if (bubbleWrapper) {
-            bubbleWrapper.appendChild(transDiv);
-        } else {
-            msgElement.appendChild(transDiv);
-        }
-    }
-    
-    function renderMessages() {
-        const existingMessages = chatContainer.querySelectorAll('.message:not(.placeholder-only)');
-        existingMessages.forEach(node => node.remove());
-        
-        if (messages.length === 0) {
-            emptyPlaceholder.style.display = 'block';
-            return;
-        }
-        emptyPlaceholder.style.display = 'none';
-        
-        messages.forEach(msg => {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message', msg.type === 'fan' ? 'fan' : 'idol');
-            messageDiv.setAttribute('data-id', msg.id);
-            
-            const nameSpan = document.createElement('div');
-            nameSpan.classList.add('message-name');
-            nameSpan.textContent = msg.senderName;
-            
-            const bubbleDiv = document.createElement('div');
-            bubbleDiv.classList.add('bubble');
-            bubbleDiv.textContent = msg.content;
-            
-            const timeSpan = document.createElement('div');
-            timeSpan.classList.add('time-stamp');
-            timeSpan.textContent = msg.time;
-            
-            const translateWrapper = document.createElement('div');
-            translateWrapper.className = 'translate-wrapper';
-            const transBtn = document.createElement('button');
-            transBtn.textContent = '🔍 翻译';
-            transBtn.className = 'translate-btn';
-            transBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                toggleTranslation(msg.id, msg.content, msg.type === 'fan');
-            });
-            translateWrapper.appendChild(transBtn);
-            
-            messageDiv.appendChild(nameSpan);
-            messageDiv.appendChild(bubbleDiv);
-            messageDiv.appendChild(timeSpan);
-            messageDiv.appendChild(translateWrapper);
-            chatContainer.appendChild(messageDiv);
-        });
-        
-        if (autoScrollEnabled) {
-            scrollToBottom();
-        } else {
-            if (messages.length > 0 && scrollBtn) scrollBtn.style.display = 'flex';
-        }
-    }
-    
-    function addMessage(type, senderName, content, time = null) {
-        const newMsg = {
-            id: Date.now() + Math.random() * 10000 + Math.random(),
-            type: type,
-            senderName: senderName,
-            content: content,
-            time: time || getRandomTime()
-        };
-        messages.push(newMsg);
-        renderMessages();
-        if (!autoScrollEnabled && scrollBtn) scrollBtn.style.display = 'flex';
-        if (navigator.vibrate) navigator.vibrate(20);
-    }
-    
-    // 一呼百应 - 粉丝大反应 (爱豆发送后触发大量回应，包含针对爱豆消息的智能反应)
-    function oneCallManyResponse(idolMessageContent) {
-        const responseCount = Math.floor(Math.random() * 14) + 10;  // 10~24条，更加轰炸
-        showToast(`✨ 一呼百应！ ${responseCount}位粉丝热情回应 ✨`);
-        
-        // 根据爱豆消息内容生成关联回应 (中韩混用加强真实感)
-        let relatedReplies = [];
-        const msgLower = idolMessageContent.toLowerCase();
-        if (msgLower.includes('사랑') || msgLower.includes('❤️') || msgLower.includes('love') || msgLower.includes('爱')) {
-            relatedReplies = ["❤️🧡💛 우리도 사랑해요!!!", "💕 사랑은 영원하다", "😭❤️ 너무 달달해", "❤️ 역시 우리 아이돌 사랑해요", "💖 팬들도 당신을 사랑해요"];
-        }
-        if (msgLower.includes('고마워') || msgLower.includes('감사') || msgLower.includes('谢谢')) {
-            relatedReplies = ["😭 항상 고마워요! 우리가 더 감사해", "❤️ 언니가 있어서 행복해요", "🙏 감사합니다 아이돌님", "🌟 항상 감사드려요 사랑해요"];
-        }
-        if (msgLower.includes('힘내') || msgLower.includes('화이팅') || msgLower.includes('加油')) {
-            relatedReplies = ["💪💪 우리 같이 힘내요!!", "🔥🔥 오늘도 힘내세요!", "🙌 응원합니다!!", "💪 팬도 힘낼게요!"];
-        }
-        if (msgLower.includes('보고싶어') || msgLower.includes('미안') || msgLower.includes('想见')) {
-            relatedReplies = ["😭 저도 보고싶어요!", "🌸 얼른 만나요!!", "💖 보고싶어 죽겠다", "🥺 언제와요? 보고파"];
-        }
-        const defaultReplies = [
-            `😭❤️ "${idolMessageContent}" 너무 멋져요!!`,
-            `✨ 언니/오빠 말 대박 공감!`,
-            `💎 나도 그래!!! 완전 짱👏`,
-            `🌸 맞아요 ㅠㅠ 감동이에요`,
-            `🔥🔥🔥 아이돌 최고!`,
-            `📣 우리 영원히 함께해요`,
-            `🐰♥️ 최고다 최고!`,
-            `💬 정말 멋진 말씀✨`,
-            `🎀 덕분에 힘내요!`
+    function fanDiscussEpisode(epNum) {
+        const discussMsgs = [
+            `第${epNum}集看完了！太好哭了`, `第${epNum}集那个对视我死了`, `第${epNum}集导演太会拍了`, `第${epNum}集申惟韩振绝了`
         ];
-        const allReplies = [...defaultReplies, ...relatedReplies];
+        for(let i=0;i<2;i++) {
+            fansMessages.push({ sender: getRandomCpName(), text: discussMsgs[Math.floor(Math.random() * discussMsgs.length)], time: getCurrentTime(), type: "text", avatar: getRandomCpAvatar() });
+        }
+    }
+    
+    function startFanBombing() {
+        if(fansInterval) clearInterval(fansInterval);
+        if(officialInterval) clearInterval(officialInterval);
+        fansInterval = setInterval(() => {
+            fansMessages.push({ sender: getRandomCpName(), text: fanMsgPool[Math.floor(Math.random() * fanMsgPool.length)], time: getCurrentTime(), type: "text", avatar: getRandomCpAvatar() });
+            if(fansMessages.length > 300) fansMessages = fansMessages.slice(-200);
+            if(currentRoom === "fans") { renderChatRoom(); scrollToBottom(); }
+        }, 300 + Math.random() * 250);
+        officialInterval = setInterval(() => {
+            sendOfficialNotice();
+            if(currentRoom === "fans") { renderChatRoom(); scrollToBottom(); }
+        }, 45000 + Math.random() * 15000);
+    }
+    
+    let directingLogs = [];
+    
+    function updateAffectionUI() {
+        const syBar = document.getElementById('syProgress');
+        const hjBar = document.getElementById('hjProgress');
+        const syVal = document.getElementById('syProgressVal');
+        const hjVal = document.getElementById('hjProgressVal');
+        if(syBar) syBar.style.width = syToHj + '%';
+        if(hjBar) hjBar.style.width = hjToSy + '%';
+        if(syVal) syVal.innerText = syToHj + '%';
+        if(hjVal) hjVal.innerText = hjToSy + '%';
+    }
+    
+    function executeDirecting(option, epIdx) {
+        if(gameFinished) return;
+        const ep = episodes[epIdx];
+        syToHj = Math.min(100, syToHj + option.syEffect);
+        hjToSy = Math.min(100, hjToSy + option.hjEffect);
+        updateAffectionUI();
         
-        let delay = 0;
-        for (let i = 0; i < responseCount; i++) {
-            setTimeout(() => {
-                if (!isBombActive) return;
-                let replyMsg;
-                if (Math.random() > 0.3) {
-                    replyMsg = randomItem(allReplies);
-                } else {
-                    replyMsg = generateRandomFanMessage();
-                }
-                const randomFan = getRandomFanName();
-                addMessage('fan', randomFan, replyMsg);
-            }, delay);
-            delay += Math.random() * 160 + 50;
-        }
-        // 额外再补一波狂热高潮
-        setTimeout(() => {
-            for (let i=0; i<4; i++) {
-                setTimeout(() => {
-                    if (isBombActive) {
-                        const fanExtra = getRandomFanName();
-                        const exciteMsg = randomItem(["🔥🔥🔥 대박 이벤트", "💥💥💥 아이돌 짱", "🎉🎉🎉 축하해요", "💖💖💖 사랑해", "🐰🐰❤️❤️", "✨✨ 일확천다 ✨✨"]);
-                        addMessage('fan', fanExtra, exciteMsg);
-                    }
-                }, i * 180);
-            }
-        }, 500);
-    }
-    
-    function sendIdolMessage(content) {
-        if (!content.trim()) return;
-        const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        addMessage('idol', idolName, content.trim(), currentTime);
-        messageInput.value = '';
-        // 一呼百应核心
-        oneCallManyResponse(content.trim());
-        // 追加瞬间爆发感
-        setTimeout(() => {
-            if (isBombActive) {
-                for(let i=0;i<4;i++) {
-                    setTimeout(() => {
-                        const rushFan = getRandomFanName();
-                        const rushMsg = randomItem(["🔥 바로 응답!","✨召唤响应✨","❤️❤️❤️❤️","대박 사건❤️","💌 아이돌 메시지💌"]);
-                        addMessage('fan', rushFan, rushMsg);
-                    }, i*70);
-                }
-            }
-        }, 150);
-    }
-    
-    function showToast(text) {
-        const existingToast = document.querySelector('.toast-message');
-        if(existingToast) existingToast.remove();
-        const toast = document.createElement('div');
-        toast.className = 'toast-message';
-        toast.innerText = text;
-        document.querySelector('.phone').appendChild(toast);
-        setTimeout(() => toast.remove(), 2000);
-    }
-    
-    function setIdolName(newName) {
-        if (newName && newName.trim() !== "") {
-            idolName = newName.trim();
-            idolNameSpan.innerText = idolName;
-            if(idolName.includes("🐰") || idolName.includes("토끼")) avatarEmoji.innerText = "🐰";
-            else if(idolName.includes("🐱") || idolName.includes("고양이")) avatarEmoji.innerText = "🐱";
-            else if(idolName.includes("🌟")) avatarEmoji.innerText = "🌟";
-            else avatarEmoji.innerText = "⭐️";
-            showToast(`✨ 名字变更为 "${idolName}" ✨`);
-        } else {
-            showToast("请输入名字!");
-        }
-    }
-    
-    function promptEditName() {
-        let newName = prompt("✨ 设置爱豆名字 ✨\n(例: Karina, Winter, 지민)", idolName);
-        if (newName !== null && newName.trim() !== "") {
-            setIdolName(newName);
-        } else if (newName !== null) {
-            showToast("名字不能为空!");
-        }
-    }
-    
-    function bindScrollEvents() {
-        if (!chatContainer) return;
-        chatContainer.addEventListener('scroll', () => {
-            const isAtBottom = chatContainer.scrollHeight - chatContainer.scrollTop <= chatContainer.clientHeight + 60;
-            if (isAtBottom) {
-                autoScrollEnabled = true;
-                if (scrollBtn) scrollBtn.style.display = 'none';
-            } else {
-                if (autoScrollEnabled === true) autoScrollEnabled = false;
-                if (scrollBtn && messages.length > 0) scrollBtn.style.display = 'flex';
-            }
+        directingLogs.unshift({
+            title: ep.title,
+            script: ep.script,
+            choice: option.text,
+            reaction: option.reaction,
+            after: ep.afterReaction,
+            behind: ep.behind,
+            time: getCurrentTime()
         });
-    }
-    
-    function startFanBombardment() {
-        function fanLoop() {
-            if (!isBombActive) return;
-            const delay = Math.random() * 1200 + 450;
-            setTimeout(() => {
-                if (!isBombActive) return;
-                const randomFan = getRandomFanName();
-                const randomMsg = generateRandomFanMessage();
-                addMessage('fan', randomFan, randomMsg);
-                if (Math.random() > 0.75 && messages.length < 350) {
-                    setTimeout(() => {
-                        if (isBombActive) addMessage('fan', getRandomFanName(), generateRandomFanMessage());
-                    }, 100);
-                }
-                fanLoop();
-            }, delay);
+        
+        // 剧集更新通知和影迷讨论
+        const episodeNum = epIdx + 1;
+        if(episodeNum <= 8) {
+            sendOfficialNotice();
+            fanDiscussEpisode(episodeNum);
         }
-        fanLoop();
-        setInterval(() => {
-            if (isBombActive && messages.length < 400) {
-                addMessage('fan', getRandomFanName(), randomItem(["🎤 라이브 기대해요!!", "📸 셀카 주세요 ❤️", "🌙 항상 응원합니다", "✨✨✨✨", "💌 DM 사랑해요"]));
-            }
-        }, 5800);
+        
+        currentEpisodeIdx++;
+        
+        if(currentEpisodeIdx >= episodes.length) {
+            gameFinished = true;
+            showEnding();
+            return;
+        }
+        if(currentRoom === "direct") renderChatRoom();
+        scrollToBottom();
     }
     
-    function maintainMessageLimit() {
-        setInterval(() => {
-            if (messages.length > 300) messages = messages.slice(-260);
-            renderMessages();
-        }, 15000);
+    function showEnding() {
+        endingShown = true;
+        let endingTitle = "";
+        let endingMsg = "";
+        let avg = (syToHj + hjToSy) / 2;
+        
+        if(syToHj >= 80 && hjToSy >= 80) {
+            endingTitle = "双向奔赴 · 天作之合";
+            endingMsg = "杀青宴上申惟主动坐在韩振旁边。韩振给他夹菜，申惟没拒绝。散场时有人拍到申惟的手往后伸了一下，韩振握住了。杀青之后两人住得很近，经常被拍到一起买菜。";
+        } else if(syToHj >= 65 && hjToSy >= 65) {
+            endingTitle = "细水长流 · 温柔以待";
+            endingMsg = "杀青宴上韩振敬了申惟一杯，说「哥，谢谢你」。申惟说「你也辛苦了」。碰杯的时候两人都笑了。后来采访里韩振说「申惟哥是我很尊重的人」。";
+        } else if(syToHj >= 75 && hjToSy < 55) {
+            endingTitle = "落花有意 · 流水无情";
+            endingMsg = "杀青之后韩振给申惟发消息，申惟隔了很久才回。韩振看着手机屏幕看了很久。后来韩振再也没主动找过他。";
+        } else if(syToHj < 55 && hjToSy >= 75) {
+            endingTitle = "一厢情愿 · 有始无终";
+            endingMsg = "杀青宴上申惟提前走了。韩振追出去在电梯口叫住他。「哥，你是不是讨厌我？」申惟摇头说「不是」。电梯门关上的时候韩振看到申惟眼眶红了。";
+        } else if(avg >= 55) {
+            endingTitle = "未完待续 · 江湖再见";
+            endingMsg = "杀青之后两人各自进了新剧组。偶尔在颁奖礼后台遇到，会点头打个招呼。有一次被拍到他们在角落里聊天，不知道说了什么，但两人都在笑。";
+        } else {
+            endingTitle = "到此为止 · 各自安好";
+            endingMsg = "杀青宴上两人坐不同桌。有人问申惟「杀青了有什么想对韩振说的吗」，申惟说「祝他前途无量」。韩振听到之后笑了笑，没说话。";
+        }
+        
+        const container = document.getElementById('chatContainer');
+        if(container) {
+            container.innerHTML = `<div class="ending-box">
+                <div style="font-size:40px;">🎬</div>
+                <h2 style="color:#eebb77;margin:8px 0;font-size:18px;">${endingTitle}</h2>
+                <p style="color:#efdbbc;margin:12px 0;line-height:1.45;font-size:13px;">${endingMsg}</p>
+                <div class="badge-area">
+                    <span class="ending-badge">申惟→韩振 ${Math.floor(syToHj)}%</span>
+                    <span class="ending-badge">韩振→申惟 ${Math.floor(hjToSy)}%</span>
+                </div>
+                <button class="reset-btn" id="resetGameBtn">重新开拍</button>
+            </div>`;
+            const resetBtn = document.getElementById('resetGameBtn');
+            if(resetBtn) resetBtn.addEventListener('click', resetGame);
+        }
     }
     
-    function initialFlood() {
-        setTimeout(() => {
-            for (let i=0;i<5;i++) {
-                setTimeout(() => {
-                    if (isBombActive) addMessage('fan', getRandomFanName(), randomItem(["💖 안녕하세요!", "🌸 데뷔 축하", "✨ 팬이에요", "🔥 응원합니다", "❤️ DM 왔어요"]));
-                }, i*220);
+    function renderDirectingRoom() {
+        if(gameFinished || endingShown) {
+            return `<div class="studio-card"><div class="studio-title">🎬 杀青</div><div class="reaction-text">剧集已经拍完了。点击下方重新开拍可以玩新的一轮。</div></div>`;
+        }
+        if(currentEpisodeIdx >= episodes.length) {
+            return `<div class="studio-card"><div class="studio-title">🎬 杀青</div><div class="reaction-text">所有剧集都拍完了！即将显示结局...</div></div>`;
+        }
+        const ep = episodes[currentEpisodeIdx];
+        let html = `<div class="studio-card">
+                        <div class="episode-badge">第${currentEpisodeIdx+1}集 / 共8集</div>
+                        <div class="studio-title">${ep.title}</div>
+                        <div class="script-line">📜 ${ep.script}</div>
+                        <div class="directing-options" id="directingOptionsContainer"></div>
+                    </div>`;
+        for(let i=0; i<directingLogs.length && i<5; i++) {
+            const log = directingLogs[i];
+            html += `<div class="studio-card">
+                        <div class="studio-title">📋 ${log.title}</div>
+                        <div class="script-line">🎬 导演指导：${log.choice}</div>
+                        <div class="reaction-text">🎭 拍摄现场：${log.reaction}</div>
+                        <div class="reaction-text">🍜 杀青后：${log.after}</div>
+                        <div class="reaction-text">💬 幕后对话：${log.behind}</div>
+                        <div class="message-time">${log.time}</div>
+                    </div>`;
+        }
+        return html;
+    }
+    
+    function renderChatRoom() {
+        const container = document.getElementById('chatContainer');
+        if(!container) return;
+        if(currentRoom === "direct") {
+            container.innerHTML = renderDirectingRoom();
+            const optionsContainer = document.getElementById('directingOptionsContainer');
+            if(optionsContainer && !gameFinished && currentEpisodeIdx < episodes.length) {
+                const ep = episodes[currentEpisodeIdx];
+                optionsContainer.innerHTML = '';
+                ep.options.forEach((opt) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'directing-option-btn';
+                    btn.innerText = opt.text;
+                    btn.onclick = () => executeDirecting(opt, currentEpisodeIdx);
+                    optionsContainer.appendChild(btn);
+                });
             }
-        }, 400);
+            updatePresetButtons();
+            return;
+        }
+        
+        if(fansMessages.length === 0) { container.innerHTML = '<div class="empty-chat">暂无消息</div>'; updatePresetButtons(); return; }
+        let html = '';
+        const startIdx = Math.max(0, fansMessages.length - 55);
+        for(let i=startIdx; i<fansMessages.length; i++) {
+            const msg = fansMessages[i];
+            const isOfficial = msg.sender === "短剧官方";
+            html += `<div class="message-row">
+                        <div class="avatar">${msg.avatar}</div>
+                        <div class="message-content">
+                            <div class="sender-name" style="${isOfficial ? 'color:#2c6b2f;' : ''}">${escapeHtml(msg.sender)}</div>
+                            <div class="bubble">${escapeHtml(msg.text)}</div>
+                            <div class="message-time">${msg.time}</div>
+                        </div>
+                    </div>`;
+        }
+        container.innerHTML = html;
+        updatePresetButtons();
+    }
+    
+    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m) { if(m === '&') return '&amp;'; if(m === '<') return '&lt;'; if(m === '>') return '&gt;'; return m; }); }
+    function scrollToBottom() { const container = document.getElementById('chatContainer'); if(container) setTimeout(() => container.scrollTop = container.scrollHeight, 50); }
+    
+    const presetFans = ["年上养成太好嗑了", "第几集有告白", "花絮什么时候放", "他们好配", "骨科yyds", "导演你是神"];
+    
+    function updatePresetButtons() {
+        const container = document.getElementById('presetBtns');
+        if(!container) return;
+        if(currentRoom === "fans") {
+            container.innerHTML = '';
+            presetFans.forEach(reply => {
+                const btn = document.createElement('button');
+                btn.className = 'preset-btn';
+                btn.innerText = reply;
+                btn.onclick = () => { document.getElementById('replyInput').value = reply; sendMessage(reply); };
+                container.appendChild(btn);
+            });
+        } else {
+            container.innerHTML = '';
+        }
+    }
+    
+    function sendMessage(text) {
+        if(!text.trim()) return;
+        if(currentRoom === "fans") {
+            fansMessages.push({ sender: directorName, text: text, time: getCurrentTime(), type: "text", avatar: "🎬", isMine: true });
+            for(let i=0;i<2;i++) {
+                fansMessages.push({ sender: getRandomCpName(), text: ["导演回我了！", "导演看这里", "1499！"][Math.floor(Math.random()*3)], time: getCurrentTime(), type: "text", avatar: getRandomCpAvatar() });
+            }
+            renderChatRoom();
+            scrollToBottom();
+        }
+        document.getElementById('replyInput').value = '';
+    }
+    
+    function switchRoom(room) {
+        currentRoom = room;
+        document.querySelectorAll('.chat-tab').forEach(tab => { if(tab.dataset.room === room) tab.classList.add('active'); else tab.classList.remove('active'); });
+        renderChatRoom();
+        scrollToBottom();
+    }
+    
+    function resetGame() {
+        syToHj = 20;
+        hjToSy = 25;
+        currentEpisodeIdx = 0;
+        gameFinished = false;
+        endingShown = false;
+        directingLogs = [];
+        officialIndex = 0;
+        fansMessages = [];
+        for(let i=0;i<20;i++) {
+            fansMessages.push({ sender: getRandomCpName(), text: fanMsgPool[Math.floor(Math.random() * fanMsgPool.length)], time: getCurrentTime(), type: "text", avatar: getRandomCpAvatar() });
+        }
+        updateAffectionUI();
+        if(currentRoom === "fans") renderChatRoom();
+        else if(currentRoom === "direct") renderChatRoom();
     }
     
     function init() {
-        bindScrollEvents();
-        startFanBombardment();
-        maintainMessageLimit();
-        initialFlood();
-        sendBtn.addEventListener('click', () => {
-            const text = messageInput.value;
-            if (text.trim()) sendIdolMessage(text);
-            else showToast("메시지를 입력하세요!");
-        });
-        messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                const text = messageInput.value;
-                if (text.trim()) sendIdolMessage(text);
-            }
-        });
-        editNameBtn.addEventListener('click', promptEditName);
-        scrollBtn.addEventListener('click', () => {
-            scrollToBottom();
-            autoScrollEnabled = true;
-            scrollBtn.style.display = 'none';
-        });
-        document.querySelector('.back-btn')?.addEventListener('click', () => showToast("💌 WVS DM 一呼百应 💌"));
-        setIdolName("🐰 카리나");
+        for(let i=0;i<25;i++) {
+            fansMessages.push({ sender: getRandomCpName(), text: fanMsgPool[Math.floor(Math.random() * fanMsgPool.length)], time: getCurrentTime(), type: "text", avatar: getRandomCpAvatar() });
+        }
+        startFanBombing();
+        renderChatRoom();
+        updateAffectionUI();
+        document.querySelectorAll('.chat-tab').forEach(tab => tab.addEventListener('click', () => switchRoom(tab.dataset.room)));
+        document.getElementById('confirmNameBtn')?.addEventListener('click', () => { const nn = document.getElementById('directorNameInput')?.value.trim(); if(nn) directorName = nn; });
+        const sendBtn = document.getElementById('sendBtn'), replyInput = document.getElementById('replyInput');
+        if(sendBtn) sendBtn.addEventListener('click', () => { const t = replyInput.value.trim(); if(t) sendMessage(t); });
+        if(replyInput) replyInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') { const t = replyInput.value.trim(); if(t) sendMessage(t); } });
     }
     init();
 </script>
